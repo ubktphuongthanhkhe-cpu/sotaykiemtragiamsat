@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#126b55"><title>Sổ tay công tác kiểm tra, giám sát</title>
+<link rel="icon" href="icon.png"><link rel="apple-touch-icon" href="icon.png"><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="top"><div class="brand"><div class="mark">KT</div><div><b>SỔ TAY CÔNG TÁC</b><strong>KIỂM TRA, GIÁM SÁT</strong><small>ĐẢNG ỦY PHƯỜNG THANH KHÊ</small></div></div><button id="adminbtn" class="btn light">🔑 Quản trị</button></header>
+<main class="wrap">
+<div id="offline" class="notice hidden">Đang xem dữ liệu đã lưu (ngoại tuyến).</div>
+
+<section id="p-home" class="page home">
+<button id="homeadmin" class="homeadmin" type="button" aria-label="Quản trị" title="Quản trị">🔑</button>
+
+<div class="cover">
+  <div class="home-logo"><img src="icon.png" alt="Sổ tay công tác kiểm tra, giám sát"></div>
+  <p class="cover-kicker">ĐẢNG ỦY PHƯỜNG THANH KHÊ</p>
+  <h1 class="cover-title">Sổ tay công tác kiểm tra, giám sát, kỷ luật của Đảng, những điều đảng viên không được làm</h1>
+</div>
+
+<h2 class="home-sec-title">MỤC LỤC</h2>
+<div class="toc chapters">
+<button class="chapter toc-item" data-go="docs"><span class="ch-ico">📚</span><span class="ch-body"><b>Văn bản, tài liệu</b><small>Tra cứu văn bản Trung ương, Thành phố và Phường</small></span><i class="ch-ar">›</i></button>
+<button class="chapter toc-item" data-go="skills"><span class="ch-ico">🧭</span><span class="ch-body"><b>Kỹ năng nghiệp vụ</b><small>Hướng dẫn, quy trình và tài liệu nghiệp vụ</small></span><i class="ch-ar">›</i></button>
+<button class="chapter toc-item" data-go="tasks"><span class="ch-ico">✅</span><span class="ch-body"><b>Nhiệm vụ thực hiện</b><small>Theo dõi công việc, chu kỳ và thời hạn</small></span><i class="ch-ar">›</i></button>
+</div>
+
+<details class="card fold">
+<summary><h2>📘 HƯỚNG DẪN SỬ DỤNG</h2><i class="fold-ar">›</i></summary>
+<div class="fold-body">
+<p>Sổ tay hỗ trợ tra cứu văn bản, tài liệu và các nội dung nghiệp vụ về công tác kiểm tra, giám sát; đồng thời theo dõi những nhiệm vụ cần thực hiện.</p>
+<div class="guide-step"><b>1. Tra cứu văn bản, tài liệu</b><span>Chọn mục “Văn bản”, sử dụng ô tìm kiếm hoặc lọc theo nhóm. Chạm vào tên tài liệu để xem thông tin chi tiết.</span></div>
+<div class="guide-step"><b>2. Xem tài liệu PDF</b><span>Chọn “Xem PDF” để đọc toàn trang: vuốt trái/phải để chuyển trang, kẹp hai ngón hoặc chạm đúp để phóng to. Chọn “Tải về” để lưu tài liệu.</span></div>
+<div class="guide-step"><b>3. Tra cứu nghiệp vụ</b><span>Chọn mục “Nghiệp vụ” để tìm các hướng dẫn, quy trình và tài liệu phục vụ công tác.</span></div>
+<div class="guide-step"><b>4. Theo dõi nhiệm vụ</b><span>Chọn mục “Nhiệm vụ” để xem nội dung, thời hạn và tình trạng thực hiện.</span></div>
+<p class="guide-note">Lưu ý: Mỗi lần chỉ mở một tài liệu. Khi chọn tài liệu khác, nội dung đang mở sẽ tự động thu gọn.</p>
+</div></details>
+</section>
+
+<section id="p-docs" class="page hidden"><div class="pagehead"><h2>Văn bản, tài liệu</h2><button class="btn adm hidden" data-add="doc">＋ Tải lên PDF</button></div><div class="chips" id="docchips"></div><input id="q" class="search" type="search" placeholder="🔍 Tìm theo tên, số ký hiệu, trích yếu..."><div id="doclist" class="list"></div></section>
+<section id="p-skills" class="page hidden"><div class="pagehead"><h2>Kỹ năng nghiệp vụ</h2><button class="btn adm hidden" data-add="doc">＋ Tải lên PDF</button></div><input id="q2" class="search" type="search" placeholder="🔍 Tìm hướng dẫn nghiệp vụ..."><div id="skilllist" class="list"></div></section>
+<section id="p-tasks" class="page hidden"><div class="pagehead"><h2>Nhiệm vụ thực hiện</h2><button class="btn adm hidden" data-add="task">＋ Thêm nhiệm vụ</button></div>
+<a id="reportlink" class="chapter report-card" href="baocao/"><span class="ch-ico">📊</span><span class="ch-body"><b>Báo cáo kiểm tra</b><small>Nộp báo cáo số liệu hằng tháng (Mẫu 01), báo cáo 6 tháng – năm – nhiệm kỳ (Mẫu 02)</small></span><i class="ch-ar">›</i></a>
+<div class="chips" id="taskchips"></div><div id="tasklist" class="list"></div></section>
+</main>
+<nav class="bar"><button data-p="home" class="on"><i>🏠</i>Trang chủ</button><button data-p="docs"><i>📚</i>Văn bản</button><button data-p="skills"><i>🧭</i>Nghiệp vụ</button><button data-p="tasks"><i>✅</i>Nhiệm vụ</button></nav>
+<div id="modal" class="modal hidden"><div class="dialog"><div class="dh"><h3 id="mt"></h3><button id="mx" class="x">×</button></div><div id="mb"></div></div></div>
+<div id="toast" class="toast"></div>
+<script src="config.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script><script src="app.js"></script>
+<script>
+(function(){
+  var rl=document.getElementById('reportlink'),cf=window.KTGS_CONFIG||{};
+  if(rl&&cf.BAOCAO_URL){rl.setAttribute('href',cf.BAOCAO_URL);}
+  var btn=document.getElementById('adminbtn'), fab=document.getElementById('homeadmin');
+  if(fab&&btn){fab.addEventListener('click',function(){btn.click();});}
+  function sync(){
+    var h=document.getElementById('p-home');
+    document.body.classList.toggle('home-active',!!(h&&!h.classList.contains('hidden')));
+  }
+  sync();
+  if(window.MutationObserver){
+    var mo=new MutationObserver(sync);
+    document.querySelectorAll('.page').forEach(function(p){mo.observe(p,{attributes:true,attributeFilter:['class']});});
+  }
+})();
+</script>
+</body></html>
