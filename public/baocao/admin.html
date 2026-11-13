@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover"/>
+<title>KTGS - Mẫu 01 & Mẫu 02</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0b0f14;--surface:#12171f;--surface2:#1a202c;--surface3:#232b38;
+  --border:#2d3748;--text:#edf2f7;--text2:#cbd5e6;--muted:#7e8c9e;--muted2:#5a687c;
+  --accent:#3b82f6;--accent-hi:#60a5fa;--accent-dim:#1e3a8a;
+  --green:#22c55e;--green-dim:#166534;--green-bg:#0a2a1a;
+  --red:#ef4444;--red-dim:#7f1d1d;--yellow:#eab308;--orange:#f97316;--purple:#a855f7;
+  --radius:16px;--font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.45;padding:0 0 24px 0;}
+.container{max-width:100%;padding:14px 16px 80px 16px;margin:0 auto}
+
+/* ===== HEADER căn giữa ===== */
+.header-top{
+  text-align:center;
+  padding:16px 0 10px 0;
+}
+.header-top h1{
+  font-size:1.4rem;font-weight:800;
+  background:linear-gradient(135deg,#60a5fa,#a855f7);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:10px;
+}
+.header-actions{
+  display:flex;justify-content:center;align-items:center;
+  gap:8px;flex-wrap:wrap;
+}
+.clock{font-family:var(--mono);font-size:.7rem;background:var(--surface2);padding:6px 12px;border-radius:30px;color:var(--muted2);}
+.btn{
+  background:var(--surface2);border:1px solid var(--border);border-radius:40px;
+  padding:8px 16px;font-size:.75rem;font-weight:600;color:var(--text);
+  display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .15s;
+}
+.btn:active{transform:scale(0.96);}
+.btn-export{background:linear-gradient(135deg,#1e3a8a,#1e1b4b);border-color:#3b82f6;color:#93c5fd;}
+.btn-export:hover,.btn-export:active{background:linear-gradient(135deg,#1d4ed8,#4338ca);color:white;}
+.btn-export.loading{opacity:.7;pointer-events:none;}
+
+/* ===== TABS ===== */
+.tab-bar{
+  display:flex;gap:10px;margin-bottom:18px;
+  background:var(--surface);padding:6px;border-radius:60px;border:1px solid var(--border);
+}
+.tab{
+  flex:1;text-align:center;padding:10px 0;border-radius:40px;
+  font-weight:700;font-size:.85rem;cursor:pointer;transition:all .15s;
+  background:transparent;color:var(--muted);
+}
+.tab.active{background:var(--accent);color:white;box-shadow:0 2px 8px rgba(59,130,246,0.3);}
+
+/* ===== STAT CARDS ===== */
+.stats-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;scrollbar-width:thin;}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px 14px;min-width:120px;flex:1;
+}
+.stat-label{font-size:.62rem;font-weight:600;text-transform:uppercase;color:var(--muted);letter-spacing:.5px;margin-bottom:6px}
+.stat-value{font-size:1.5rem;font-weight:800;font-family:var(--mono);line-height:1;color:var(--text)}
+.stat-sub{font-size:.58rem;color:var(--muted2);margin-top:4px}
+
+/* ===== SUMMARY BOX ===== */
+.summary-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;}
+.summary-box-title{font-size:.68rem;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.sum-cell{background:var(--surface3);border-radius:10px;padding:8px 6px;text-align:center;}
+.sum-cell-label{font-size:.55rem;color:var(--muted2);font-weight:600;text-transform:uppercase;margin-bottom:3px}
+.sum-cell-value{font-size:1.3rem;font-weight:800;font-family:var(--mono);}
+.sum-cell.kt .sum-cell-value{color:#60a5fa}
+.sum-cell.gs .sum-cell-value{color:#34d399}
+.sum-cell.gs-tx .sum-cell-value{color:#8b5cf6}
+.sum-cell.gqd .sum-cell-value{color:#f59e0b}
+.sum-cell.thkl .sum-cell-value{color:#f472b6}
+
+/* ===== SHEET BLOCK ===== */
+.sheet-block{background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:12px;overflow:hidden;}
+.year-group{margin-bottom:22px;}
+.year-group-title{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.85rem;font-weight:800;color:var(--accent-hi);padding:10px 14px;margin-bottom:12px;background:linear-gradient(135deg,var(--accent-dim),var(--surface2));border-radius:12px;border:1px solid var(--border);}
+.year-group-title .year-group-sub{font-size:.65rem;font-weight:600;color:var(--muted);}
+.sheet-header{
+  padding:11px 14px;background:var(--surface3);border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;
+}
+.sheet-name{font-weight:800;font-size:.85rem;}
+.progress-compact{display:flex;align-items:center;gap:8px;}
+.progress-bar-small{width:65px;background:var(--border);border-radius:20px;height:5px;}
+.progress-fill{height:100%;border-radius:20px;}
+
+/* ===== COLLAPSE - MẶC ĐỊNH THU GỌN ===== */
+.list-section{padding:6px 12px 10px 12px;border-bottom:1px solid var(--border);}
+.list-section:last-child{border-bottom:none;}
+.list-title{font-size:.67rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin:6px 0 5px 0;letter-spacing:.5px;display:flex;align-items:center;gap:6px;}
+.collapse-header{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--green-bg);border:1px solid var(--green-dim);border-radius:10px;
+  padding:7px 11px;margin:4px 0 0 0;cursor:pointer;user-select:none;transition:background .15s;
+}
+.collapse-header:active{background:#0d3320;}
+.collapse-header-left{display:flex;align-items:center;gap:8px;font-size:.7rem;font-weight:700;color:var(--green);flex-wrap:wrap;}
+.collapse-chevron{font-size:.65rem;color:var(--green-dim);transition:transform .22s;flex-shrink:0;}
+.collapse-chevron.open{transform:rotate(180deg);}
+.collapse-body{overflow:hidden;max-height:0;transition:max-height .28s ease-out;}
+.collapse-body.open{max-height:5000px;}
+.collapse-body-inner{padding:5px 0 2px 0;}
+.col-mini-row{display:flex;gap:5px;flex-wrap:wrap;}
+.col-mini{font-size:.58rem;background:rgba(34,197,94,0.12);border:1px solid var(--green-dim);color:var(--green);padding:1px 6px;border-radius:20px;font-weight:600;}
+
+/* ===== ITEMS ===== */
+.report-item{
+  background:var(--surface);border-radius:9px;padding:7px 9px;margin-bottom:5px;
+  display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:5px;
+  border-left:1.5px solid var(--green);
+}
+.report-item.missing{border-left-color:var(--red);opacity:0.85;}
+.report-name{font-weight:600;font-size:.72rem;flex:2;min-width:90px;}
+.report-meta{display:flex;gap:7px;align-items:center;flex-wrap:wrap;font-size:.63rem;}
+.report-date{font-family:var(--mono);color:var(--muted2);}
+.four-col{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px;}
+.col-stat{font-size:.63rem;background:var(--surface2);padding:2px 7px;border-radius:20px;}
+.col-stat strong{font-weight:800;color:var(--accent-hi);}
+.file-link{background:var(--accent-dim);padding:3px 8px;border-radius:30px;color:var(--accent-hi);text-decoration:none;font-size:.6rem;font-weight:500;display:inline-block;cursor:pointer;}
+.file-link:hover{background:var(--accent);color:white;}
+.stats-badge{background:var(--surface3);border-radius:40px;padding:2px 8px;font-size:.63rem;font-weight:500;}
+.stats-badge span{color:var(--green);font-weight:800;}
+.empty-state{text-align:center;padding:18px;color:var(--muted2);font-size:.72rem;}
+.loading-state{display:flex;flex-direction:column;align-items:center;padding:60px 20px;gap:12px;color:var(--muted);}
+.spinner{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--accent-hi);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast-msg{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--surface2);border:1px solid var(--border);border-radius:50px;
+  padding:9px 22px;font-size:.75rem;color:var(--text);z-index:9999;
+  opacity:0;transition:opacity .2s;pointer-events:none;
+  max-width:88%;text-align:center;white-space:nowrap;
+}
+.toast-msg.show{opacity:1;}
+.toast-msg.err{background:var(--red-dim);border-color:var(--red);}
+
+/* ===== LOGIN ===== */
+#loginOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 15% 20%,  rgba(120,210,255,0.55), transparent 38%),
+    radial-gradient(circle at 85% 15%,  rgba(0,200,255,0.30),   transparent 35%),
+    radial-gradient(circle at 70% 80%,  rgba(100,180,255,0.38), transparent 40%),
+    radial-gradient(circle at 20% 80%,  rgba(160,230,255,0.30), transparent 36%),
+    radial-gradient(circle at 50% 50%,  rgba(200,240,255,0.18), transparent 55%),
+    linear-gradient(160deg, #d0efff 0%, #b8e4ff 25%, #caf0ff 55%, #daf5ff 80%, #eafaff 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 390px;
+  background: rgba(255,255,255,0.52);
+  border: 1px solid rgba(255,255,255,0.70);
+  border-radius: 28px;
+  padding: 38px 28px;
+  text-align: center;
+  box-shadow:
+    0 10px 40px rgba(13,71,161,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  box-sizing: border-box;
+  animation: loginPop .35s ease;
+}
+
+@keyframes loginPop {
+  from { transform: scale(.9); opacity: 0; }
+  to   { transform: scale(1);  opacity: 1; }
+}
+
+.login-logo {
+  width:150px !important;
+  height:150px !important;
+  object-fit: contain;
+  margin-bottom: 18px;
+  filter: drop-shadow(0 6px 16px rgba(0,100,200,0.20));
+}
+
+.login-title {
+  color: #0d47a1;
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: .5px;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.login-subtitle {
+  color: #3d6b92;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.login-input-wrap {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+#loginPassword {
+  width: 100%;
+  height: 56px;
+  border: none;
+  outline: none;
+  border-radius: 16px;
+  padding: 0 46px 0 18px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0d2b45;
+  background: rgba(255,255,255,0.96);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.08);
+  box-sizing: border-box;
+  transition: box-shadow .2s;
+}
+
+#loginPassword:focus {
+  background: #fff;
+  box-shadow:
+    0 0 0 3px rgba(0,198,255,0.35),
+    inset 0 1px 2px rgba(0,0,0,0.06);
+}
+
+#loginPassword::placeholder {
+  color: #8ba3bb;
+  font-weight: 500;
+}
+
+#loginPassword:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#togglePassword {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .2s;
+}
+
+#togglePassword:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+#loginBtn {
+  width: 100%;
+  height: 56px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: white;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s, opacity .2s;
+  box-shadow: 0 8px 24px rgba(0,114,255,.35);
+}
+
+#loginBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0,114,255,.45);
+}
+
+#loginBtn:active {
+  transform: scale(.98);
+}
+
+#loginBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+#loginError {
+  display: none;
+  margin-bottom: 14px;
+  color: #c62828;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 30px 20px;
+    border-radius: 22px;
+  }
+
+  .login-logo {
+    width: 110px;
+    height: 110px;
+  }
+
+  .login-title {
+    font-size: 19px;
+  }
+
+  .login-subtitle {
+    font-size: 13px;
+  }
+
+  #loginPassword,
+  #loginBtn {
+    height: 50px;
+    font-size: 15px;
+  }
+}
+</style>
+<!-- Floating Back Button CSS -->
+<style>
+.floating-back-btn {
+  position: fixed;
+  right: 18px;
+  bottom: 85px;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 1;
+  border: 1px solid rgba(255,255,255,0.25);
+  z-index: 999999;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.floating-back-btn:active {
+  transform: scale(0.92);
+}
+</style>
+
+</head>
+<body>
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <img src="icon.png" class="login-logo" alt="Logo">
+    <div class="login-title">ĐĂNG NHẬP HỆ THỐNG</div>
+    <div class="login-subtitle">Vui lòng nhập mật khẩu để tiếp tục</div>
+    <div class="login-input-wrap">
+      <input type="password" id="loginPassword" placeholder="Nhập mật khẩu..." autocomplete="off">
+      <button type="button" id="togglePassword">👁️</button>
+    </div>
+    <div id="loginError">Sai mật khẩu!</div>
+    <button id="loginBtn">🔓 Đăng nhập</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- HEADER căn giữa -->
+  <div class="header-top">
+    <h1>Kiểm Tra Giám Sát<span style="font-size:.8rem;color:var(--muted);font-weight:400;"><br>(Thống kê báo cáo thực tế)</span></h1>
+    <div class="header-actions">
+      <span class="clock" id="liveClock"></span>
+      <button class="btn" id="globalRefresh">⟳ Làm mới</button>
+      <button class="btn btn-export" id="btnExportWord">📄 Xuất Word</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <div class="tab active" data-tab="mau01">📊 Mẫu 01CB<br/><span style="font-size:.65rem;font-weight:400;">(KT,GSCĐ,GSTX,GQĐ,THKL)</span></div>
+    <div class="tab" data-tab="mau02">📄 Mẫu 02CB<br/><span style="font-size:.65rem;font-weight:400;">(Đã nộp / Chưa nộp)</span></div>
+  </div>
+
+  <!-- NỘI DUNG ĐỘNG -->
+  <div id="dynamicContent">
+    <div class="loading-state"><div class="spinner"></div><div>Đang tải dữ liệu...</div></div>
+  </div>
+</div>
+<div id="toastMessage" class="toast-msg"></div>
+
+<!-- Floating Back Button -->
+<div class="floating-back-btn" id="backBtn">↩️</div>
+
+<!-- ===== CONFIG.JS - Chứa link Google Sheet ẨN ===== -->
+<script src="config.js"></script>
+
+<script>
+// ============================================================
+//  CẤU HÌNH - Lấy từ config.js (không hiển thị công khai)
+// ============================================================
+const SCRIPT_URL = (typeof GAS_URL !== 'undefined') ? GAS_URL : '';
+
+if (!SCRIPT_URL) {
+  document.getElementById('dynamicContent').innerHTML = `
+    <div class="empty-state" style="padding:40px;color:var(--red);">
+      ⚠️ Lỗi cấu hình: Không tìm thấy config.js<br>
+      <span style="font-size:.7rem;color:var(--muted);">Vui lòng kiểm tra file config.js</span>
+    </div>
+  `;
+}
+
+const authHeaders = () => ({ 'X-Admin-Token': sessionStorage.getItem('bc_token') || '' });
+function needLogin(){ sessionStorage.removeItem('bc_token'); const o=document.getElementById('loginOverlay'); if(o) o.style.display=''; }
+let allSheets = [];
+let sheetDataCache = {};
+let currentTab = 'mau01';
+let lastRenderData = { mau01:[], mau02:[] };
+
+// ============================================================
+//  TOAST
+// ============================================================
+function showToast(msg, isErr=false) {
+  const t = document.getElementById('toastMessage');
+  t.textContent = msg;
+  t.className = 'toast-msg show' + (isErr ? ' err' : '');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ============================================================
+//  FETCH
+// ============================================================
+async function fetchSheets() {
+  if (!SCRIPT_URL) {
+    showToast('Lỗi: Chưa cấu hình GAS_URL', true);
+    return false;
+  }
+  try {
+    const r = await fetch(`${SCRIPT_URL}?action=getSheets&t=${Date.now()}`, { headers: authHeaders() });
+    if (r.status === 401) { needLogin(); throw new Error('Phiên đăng nhập đã hết hạn'); }
+    const data = await r.json();
+    if(data.error) throw new Error(data.error);
+    allSheets = data.map(s=>({ name:s.name, total:s.total||0, submitted:s.submitted||0, loaiMau:s.loaiMau||(s.name.includes('01')?'Mau01':'Mau02') }));
+    return true;
+  } catch(e){ showToast('Lỗi tải: '+e.message,true); return false; }
+}
+
+async function fetchSheetDetail(name) {
+  if(sheetDataCache[name]) return sheetDataCache[name];
+  if (!SCRIPT_URL) return {rows:[],loaiMau:'Mau01',error:true};
+  try {
+    const r = await fetch(`${SCRIPT_URL}?action=getSheetData&sheet=${encodeURIComponent(name)}&_=${Date.now()}`, { headers: authHeaders() });
+    if (r.status === 401) { needLogin(); throw new Error('Phiên đăng nhập đã hết hạn'); }
+    const data = await r.json();
+    if(data.error) throw new Error(data.error);
+    const p = { rows:data.rows||[], loaiMau:data.loaiMau||(name.includes('01')?'Mau01':'Mau02') };
+    sheetDataCache[name]=p; return p;
+  } catch(e){ return {rows:[],loaiMau:'Mau01',error:true}; }
+}
+
+// ============================================================
+//  COLLAPSE - HÀM TOGGLE CHUNG
+// ============================================================
+function toggleCollapse(id) {
+  const hdr=document.getElementById(id);
+  if(!hdr)return;
+  const body=document.getElementById(id.replace('hdr-','body-'));
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  hdr.querySelector('.collapse-chevron')?.classList.toggle('open',open);
+}
+
+// ============================================================
+//  RENDER MẪU 01 - TẤT CẢ MỤC CON MẶC ĐỊNH THU GỌN
+// ============================================================
+function getSheetYearM01(name) {
+  const m = (name || '').match(/\/(\d{4})\s*$/);
+  return m ? parseInt(m[1]) : 0;
+}
+
+async function renderMau01() {
+  const ct=document.getElementById('dynamicContent');
+  ct.innerHTML=`<div class="loading-state"><div class="spinner"></div><div>Đang tải Mẫu 01...</div></div>`;
+  const sheets=allSheets.filter(s=>s.loaiMau==='Mau01');
+  if(!sheets.length){ ct.innerHTML=`<div class="empty-state" style="padding:40px;">📭 Không có sheet Mẫu 01.</div>`; return; }
+  const details=await Promise.all(sheets.map(s=>fetchSheetDetail(s.name)));
+  let totSub=0,totReq=0;
+  const data=sheets.map((s,i)=>{
+    const rows=details[i].rows||[];
+    const sub=rows.filter(r=>r.ngay&&r.ngay.trim());
+    const mis=rows.filter(r=>!r.ngay||!r.ngay.trim());
+    const sKT=sub.reduce((a,r)=>a+(+r.kt||0),0);
+    const sGS=sub.reduce((a,r)=>a+(+r.gs||0),0);
+    const sGS_TX=sub.reduce((a,r)=>a+(+r.gs_tx||0),0);
+    const sGQD=sub.reduce((a,r)=>a+(+r.gqd||0),0);
+    const sTHKL=sub.reduce((a,r)=>a+(+r.thkl||0),0);
+    totSub+=sub.length; totReq+=s.total;
+    return {sheet:s,sub,mis,sKT,sGS,sGS_TX,sGQD,sTHKL,year:getSheetYearM01(s.name)};
+  });
+  lastRenderData.mau01=data;
+  const pct=totReq?Math.round(totSub/totReq*100):0;
+
+  const years=[...new Set(data.map(d=>d.year))].sort((a,b)=>b-a);
+
+  let h=`
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-label">📊 Tổng Mẫu 01</div><div class="stat-value">${totSub}/${totReq}</div><div class="stat-sub">${pct}% hoàn thành</div></div>
+    <div class="stat-card"><div class="stat-label">📋 Số sheet</div><div class="stat-value">${sheets.length}</div><div class="stat-sub">báo cáo định kỳ</div></div>
+  </div>`;
+
+  let gi=0;
+  years.forEach(year=>{
+    const yearLabel = year ? `NĂM ${year}` : 'KHÔNG XÁC ĐỊNH NĂM';
+    const groupData = data.filter(d=>d.year===year);
+    const ySub  = groupData.reduce((a,d)=>a+d.sub.length,0);
+    const yReq  = groupData.reduce((a,d)=>a+d.sheet.total,0);
+    const yKT   = groupData.reduce((a,d)=>a+d.sKT,0);
+    const yGS   = groupData.reduce((a,d)=>a+d.sGS,0);
+    const yGS_TX= groupData.reduce((a,d)=>a+d.sGS_TX,0);
+    const yGQD  = groupData.reduce((a,d)=>a+d.sGQD,0);
+    const yTHKL = groupData.reduce((a,d)=>a+d.sTHKL,0);
+    const yPct  = yReq?Math.round(ySub/yReq*100):0;
+
+    h+=`<div class="year-group">
+      <div class="year-group-title"><span>🗓️ ${yearLabel}</span><span class="year-group-sub">${ySub}/${yReq} • ${yPct}%</span></div>
+      <div class="summary-box">
+        <div class="summary-box-title">📈 Tổng hợp cộng dồn ${year?('năm '+year):''} (từ đơn vị đã nộp)</div>
+        <div class="summary-grid">
+          <div class="sum-cell kt"><div class="sum-cell-label">I. Kiểm tra</div><div class="sum-cell-value">${yKT}</div></div>
+          <div class="sum-cell gs"><div class="sum-cell-label">II. GSCĐ</div><div class="sum-cell-value">${yGS}</div></div>
+          <div class="sum-cell gs-tx"><div class="sum-cell-label">III. GSTX</div><div class="sum-cell-value">${yGS_TX}</div></div>
+          <div class="sum-cell gqd"><div class="sum-cell-label">IV. Giải quyết đơn</div><div class="sum-cell-value">${yGQD}</div></div>
+          <div class="sum-cell thkl"><div class="sum-cell-label">V. Thi hành kỷ luật</div><div class="sum-cell-value">${yTHKL}</div></div>
+        </div>
+      </div>`;
+
+    groupData.forEach(({sheet,sub,mis,sKT,sGS,sGS_TX,sGQD,sTHKL})=>{
+      const i=gi++;
+      const pct2=sheet.total?Math.round(sub.length/sheet.total*100):0;
+      const fc=pct2>=70?'var(--green)':pct2>=30?'var(--yellow)':'var(--red)';
+      const hi=`hdr-m01-${i}`, bi=`body-m01-${i}`;
+      h+=`<div class="sheet-block">
+        <div class="sheet-header">
+          <div class="sheet-name">📁 ${esc(sheet.name)} <span style="font-size:.62rem;background:var(--accent-dim);padding:2px 7px;border-radius:40px;">Mẫu 01</span></div>
+          <div class="progress-compact"><span style="font-size:.68rem;font-weight:700;">${pct2}%</span><div class="progress-bar-small"><div class="progress-fill" style="width:${pct2}%;background:${fc}"></div></div></div>
+        </div>
+        <div class="list-section">
+          <div class="list-title">✅ ĐÃ NỘP (${sub.length}/${sheet.total})</div>
+          <div class="collapse-header" id="${hi}" onclick="toggleCollapse('${hi}')">
+            <div class="collapse-header-left">
+              <span>📋 ${sub.length} đơn vị đã nộp</span>
+              <div class="col-mini-row">
+                <span class="col-mini">I.KT:${sKT}</span>
+                <span class="col-mini">II.GSCĐ:${sGS}</span>
+                <span class="col-mini">III.GSTX:${sGS_TX}</span>
+                <span class="col-mini">IV.GQĐ:${sGQD}</span>
+                <span class="col-mini">V.THKL:${sTHKL}</span>
+              </div>
+            </div>
+            <span class="collapse-chevron">▼</span>
+          </div>
+          <div class="collapse-body" id="${bi}"><div class="collapse-body-inner">`;
+      if(!sub.length){ h+=`<div class="empty-state">Chưa có chi bộ nào nộp</div>`; }
+      else sub.forEach(r=>{
+        const fl = r.url ? 
+          `<a href="${r.url}" target="_blank" class="file-link" onclick="event.stopPropagation();">📎 File</a>` : 
+          '<span class="file-link" style="opacity:.5">📎 Không file</span>';
+        h+=`<div class="report-item">
+          <div class="report-name">${esc(r.chibo||'?')}</div>
+          <div class="report-meta" style="flex-direction:column;align-items:flex-start;gap:3px;">
+            <div style="display:flex;gap:7px;align-items:center;"><span class="report-date">📅 ${r.ngay||''}</span>${fl}</div>
+            <div class="four-col">
+              <span class="col-stat">🔍 I. KT:<strong>${+r.kt||0}</strong></span>
+              <span class="col-stat">👁️ II. GSCĐ:<strong>${+r.gs||0}</strong></span>
+              <span class="col-stat">📋 III. GSTX:<strong>${+r.gs_tx||0}</strong></span>
+              <span class="col-stat">📋 IV. GQĐ:<strong>${+r.gqd||0}</strong></span>
+              <span class="col-stat">⚖️ V. THKL:<strong>${+r.thkl||0}</strong></span>
+            </div>
+          </div>
+        </div>`;
+      });
+      h+=`</div></div></div>`;
+
+      h+=`<div class="list-section"><div class="list-title" style="color:var(--red);">⏳ CHƯA NỘP (${mis.length})</div>`;
+      const hiMis = `hdr-mis-${i}`, biMis = `body-mis-${i}`;
+      h+=`<div class="collapse-header" id="${hiMis}" onclick="toggleCollapse('${hiMis}')" style="background:var(--red-dim);border-color:var(--red);">
+        <div class="collapse-header-left" style="color:var(--red);">
+          <span>⏳ ${mis.length} đơn vị chưa nộp</span>
+        </div>
+        <span class="collapse-chevron">▼</span>
+      </div>
+      <div class="collapse-body" id="${biMis}"><div class="collapse-body-inner">`;
+      if(!mis.length){ h+=`<div class="empty-state">🎉 Tất cả đã nộp</div>`; }
+      else mis.forEach(r=>{ h+=`<div class="report-item missing"><div class="report-name">${esc(r.chibo||'?')}</div><div class="report-meta"><span class="report-date" style="color:var(--red);">⏳ Chưa nộp</span></div></div>`; });
+      h+=`</div></div></div></div>`;
+    });
+
+    h+=`</div>`;
+  });
+  ct.innerHTML=h;
+}
+
+// ============================================================
+//  RENDER MẪU 02 - MẶC ĐỊNH THU GỌN
+// ============================================================
+async function renderMau02() {
+  const ct=document.getElementById('dynamicContent');
+  ct.innerHTML=`<div class="loading-state"><div class="spinner"></div><div>Đang tải Mẫu 02...</div></div>`;
+  const sheets=allSheets.filter(s=>s.loaiMau==='Mau02');
+  if(!sheets.length){ ct.innerHTML=`<div class="empty-state" style="padding:40px;">📭 Không có sheet Mẫu 02.</div>`; return; }
+  const details=await Promise.all(sheets.map(s=>fetchSheetDetail(s.name)));
+  let totSub=0,totReq=0;
+  const data=sheets.map((s,i)=>{
+    const rows=details[i].rows||[];
+    const sub=rows.filter(r=>r.ngay&&r.ngay.trim());
+    const mis=rows.filter(r=>!r.ngay||!r.ngay.trim());
+    totSub+=sub.length; totReq+=s.total;
+    return {sheet:s,sub,mis};
+  });
+  lastRenderData.mau02=data;
+  const pct=totReq?Math.round(totSub/totReq*100):0;
+
+  let h=`<div class="stats-row">
+    <div class="stat-card"><div class="stat-label">📊 Lũy kế Mẫu 02</div><div class="stat-value">${totSub}/${totReq}</div><div class="stat-sub">${pct}% hoàn thành</div></div>
+    <div class="stat-card"><div class="stat-label">📋 Số sheet</div><div class="stat-value">${sheets.length}</div><div class="stat-sub">báo cáo đơn giản</div></div>
+  </div>`;
+
+  data.forEach(({sheet,sub,mis},i)=>{
+    const pct2=sheet.total?Math.round(sub.length/sheet.total*100):0;
+    const fc=pct2>=70?'var(--green)':pct2>=30?'var(--yellow)':'var(--red)';
+    const sid=`sheet-m02-${i}`;
+
+    h+=`<div class="sheet-block">
+      <div class="sheet-header sheet-toggle" onclick="toggleSheet('${sid}')" style="cursor:pointer;user-select:none;">
+        <div style="display:flex;flex-direction:column;gap:3px;flex:1;">
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+            <span class="sheet-name">📄 ${esc(sheet.name)}</span>
+            <span style="font-size:.6rem;background:#1e2a3a;padding:2px 7px;border-radius:40px;color:var(--muted);">Mẫu 02</span>
+          </div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:2px;">
+            <span class="stats-badge" style="font-size:.6rem;">✅ <span style="color:var(--green)">${sub.length}</span>/${sheet.total}</span>
+            <span class="stats-badge" style="font-size:.6rem;">⏳ <span style="color:var(--red)">${mis.length}</span></span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+          <div class="progress-compact">
+            <span style="font-size:.68rem;font-weight:700;color:${fc}">${pct2}%</span>
+            <div class="progress-bar-small"><div class="progress-fill" style="width:${pct2}%;background:${fc}"></div></div>
+          </div>
+          <span class="collapse-chevron sheet-chevron-${sid}" style="font-size:.7rem;color:var(--muted2);transition:transform .22s;">▼</span>
+        </div>
+      </div>
+
+      <div class="sheet-body-collapse" id="${sid}" style="overflow:hidden;max-height:0;transition:max-height .3s ease-out;">
+        <div class="list-section">
+          <div class="list-title">✅ ĐÃ NỘP (${sub.length}/${sheet.total})</div>`;
+
+    if(!sub.length){ h+=`<div class="empty-state">Chưa có chi bộ nào nộp</div>`; }
+    else sub.forEach(r=>{
+      const fl = r.url ? 
+        `<a href="${r.url}" target="_blank" class="file-link" onclick="event.stopPropagation();">📎 Xem file</a>` : 
+        '<span class="file-link" style="opacity:.5">📎 Không file</span>';
+      h+=`<div class="report-item"><div class="report-name">${esc(r.chibo||'?')}</div><div class="report-meta"><span class="report-date">📅 ${r.ngay||''}</span>${fl}</div></div>`;
+    });
+
+    h+=`</div>
+        <div class="list-section">
+          <div class="list-title" style="color:var(--red);">⏳ CHƯA NỘP (${mis.length})</div>`;
+
+    if(!mis.length){ h+=`<div class="empty-state">🎉 Hoàn thành 100%</div>`; }
+    else mis.forEach(r=>{ h+=`<div class="report-item missing"><div class="report-name">${esc(r.chibo||'?')}</div><div class="report-meta"><span class="report-date" style="color:var(--red);">⏳ Chưa nộp</span></div></div>`; });
+
+    h+=`</div>
+      </div>
+    </div>`;
+  });
+
+  ct.innerHTML=h;
+}
+
+function toggleSheet(sid){
+  const body=document.getElementById(sid);
+  if(!body)return;
+  const isOpen=body.style.maxHeight!=='0px'&&body.style.maxHeight!=='';
+  body.style.maxHeight=isOpen?'0px':'6000px';
+  const chev=document.querySelector(`.sheet-chevron-${sid}`);
+  if(chev) chev.style.transform=isOpen?'rotate(0deg)':'rotate(180deg)';
+}
+
+// ============================================================
+//  RENDER MAIN
+// ============================================================
+async function renderByTab() {
+  if(!allSheets.length){
+    const ok=await fetchSheets();
+    if(!ok||!allSheets.length){ document.getElementById('dynamicContent').innerHTML=`<div class="empty-state">⚠️ Không thể tải dữ liệu.</div>`; return; }
+  }
+  if(currentTab==='mau01') await renderMau01(); else await renderMau02();
+}
+async function fullRefresh() {
+  sheetDataCache={}; allSheets=[];
+  document.getElementById('dynamicContent').innerHTML=`<div class="loading-state"><div class="spinner"></div><div>Đang tải...</div></div>`;
+  const ok=await fetchSheets();
+  if(!ok||!allSheets.length){ document.getElementById('dynamicContent').innerHTML=`<div class="empty-state">Lỗi kết nối.</div>`; return; }
+  await renderByTab();
+  showToast('Đã cập nhật số liệu mới nhất');
+}
+
+// ============================================================
+//  XUẤT WORD
+// ============================================================
+async function exportWord() {
+  const btn=document.getElementById('btnExportWord');
+  btn.classList.add('loading'); btn.textContent='⏳ Đang tạo...';
+  showToast('Đang tạo file Word...');
+  try {
+    await new Promise(r=>setTimeout(r,50));
+    await renderByTab(); // đảm bảo dữ liệu tab đang xem là mới nhất trước khi xuất
+    const now=new Date();
+    const ds=now.toLocaleDateString('vi-VN');
+    const ts=now.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+    const docXml=buildDocXml(ds,ts,currentTab);
+    const blob=await buildDocxBlob(docXml);
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    const tabLabel = currentTab==='mau02' ? 'Mau02' : 'Mau01';
+    a.download=`BaoCao_KTGS_${tabLabel}_${ds.replace(/\//g,'-')}.docx`;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); },1000);
+    showToast('✅ Xuất Word thành công!');
+  } catch(e){
+    showToast('Lỗi tạo Word: '+e.message, true);
+    console.error(e);
+  } finally {
+    btn.classList.remove('loading'); btn.textContent='📄 Xuất Word';
+  }
+}
+
+function buildDocXml(ds,ts,tab){
+  const W='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
+  let body='';
+  const title = tab==='mau02' ? 'BÁO CÁO KTGS – MẪU 02CB' : 'BÁO CÁO KTGS – MẪU 01CB';
+  body+=para(title,{bold:true,size:32,align:'center'});
+  body+=para(`Ngày xuất: ${ds} ${ts}`,{italic:true,size:20,align:'center',color:'666666'});
+  body+=para('');
+  if(tab==='mau01' && lastRenderData.mau01.length){
+    body+=para('MẪU 01CB – KT, GSCĐ, GSTX, GQĐ, THKL',{bold:true,size:28});
+    let gKT=0,gGS=0,gGS_TX=0,gGQD=0,gTHKL=0;
+    lastRenderData.mau01.forEach(d=>{ 
+      gKT+=d.sKT;
+      gGS+=d.sGS;
+      gGS_TX+=d.sGS_TX;
+      gGQD+=d.sGQD;
+      gTHKL+=d.sTHKL; 
+    });
+    body+=para(`Tổng cộng dồn (đã nộp): KT=${gKT} | GSCĐ=${gGS} | GSTX=${gGS_TX} | GQĐ=${gGQD} | THKL=${gTHKL}`,{bold:true,size:22,color:'1a6e3d'});
+    body+=para('');
+    for(const {sheet,sub,mis,sKT,sGS,sGS_TX,sGQD,sTHKL} of lastRenderData.mau01){
+      body+=para(`Sheet: ${sheet.name}`,{bold:true,size:24});
+      body+=para(`Đã nộp: ${sub.length}/${sheet.total}   KT=${sKT}  GSCĐ=${sGS}  GSTX=${sGS_TX}  GQĐ=${sGQD}  THKL=${sTHKL}`,{size:20,color:'166534'});
+      if(sub.length){
+        body+=buildTable(['Chi bộ','Ngày nộp','KT','GSCĐ','GSTX','GQĐ','THKL'],
+          sub.map(r=>[r.chibo||'',r.ngay||'',String(+r.kt||0),String(+r.gs||0),String(+r.gs_tx||0),String(+r.gqd||0),String(+r.thkl||0)]));
+      }
+      if(mis.length){
+        body+=para(`Chưa nộp (${mis.length}): `+mis.map(r=>r.chibo||'?').join(', '),{size:18,color:'991b1b'});
+      }
+      body+=para('');
+    }
+  }
+  if(tab==='mau02' && lastRenderData.mau02.length){
+    body+=para('MẪU 02CB – DANH SÁCH NỘP BÁO CÁO',{bold:true,size:28});
+    for(const {sheet,sub,mis} of lastRenderData.mau02){
+      body+=para(`Sheet: ${sheet.name} — Đã nộp: ${sub.length}/${sheet.total}`,{bold:true,size:22});
+      if(sub.length){
+        body+=buildTable(['Chi bộ','Ngày nộp'],sub.map(r=>[r.chibo||'',r.ngay||'']));
+      }
+      if(mis.length){
+        body+=para(`Chưa nộp: `+mis.map(r=>r.chibo||'?').join(', '),{size:18,color:'991b1b'});
+      }
+      body+=para('');
+    }
+  }
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document ${W}
+  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<w:body>${body}<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:right="1080" w:bottom="1440" w:left="1080"/></w:sectPr>
+</w:body></w:document>`;
+}
+
+function para(text,opts={}){
+  const {bold=false,italic=false,size=24,align='left',color=''}=opts;
+  const rpr=[
+    bold?'<w:b/>':'',
+    italic?'<w:i/>':'',
+    `<w:sz w:val="${size}"/><w:szCs w:val="${size}"/>`,
+    color?`<w:color w:val="${color}"/>`:'',
+    `<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>`,
+  ].join('');
+  const ppr=align!=='left'?`<w:pPr><w:jc w:val="${align}"/></w:pPr>`:'';
+  const txt=xmlEsc(text);
+  const space=txt.startsWith(' ')||txt.endsWith(' ')?' xml:space="preserve"':'';
+  return `<w:p>${ppr}<w:r><w:rPr>${rpr}</w:rPr><w:t${space}>${txt}</w:t></w:r></w:p>`;
+}
+
+function buildTable(headers,rows){
+  const cell=(txt,bold=false)=>{
+    const b=bold?'<w:b/>':'';
+    const t=xmlEsc(txt);
+    return `<w:tc><w:tcPr><w:tcBorders>
+      <w:top w:val="single" w:sz="4"/><w:left w:val="single" w:sz="4"/>
+      <w:bottom w:val="single" w:sz="4"/><w:right w:val="single" w:sz="4"/>
+    </w:tcBorders></w:tcPr>
+    <w:p><w:r><w:rPr>${b}<w:sz w:val="18"/><w:szCs w:val="18"/><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr><w:t>${t}</w:t></w:r></w:p></w:tc>`;
+  };
+  let tbl=`<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/><w:tblBorders>
+    <w:insideH w:val="single" w:sz="4"/><w:insideV w:val="single" w:sz="4"/>
+  </w:tblBorders></w:tblPr>`;
+  tbl+=`<w:tr>${headers.map(h=>cell(h,true)).join('')}</w:tr>`;
+  rows.forEach(r=>{ tbl+=`<w:tr>${r.map(c=>cell(c)).join('')}</w:tr>`; });
+  tbl+=`</w:tbl>`;
+  return tbl;
+}
+
+function xmlEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+async function buildDocxBlob(documentXml){
+  const enc=new TextEncoder();
+  const files=[
+    { name:'[Content_Types].xml', data:enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Default Extension="xml" ContentType="application/xml"/>
+<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>`) },
+    { name:'_rels/.rels', data:enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`) },
+    { name:'word/document.xml', data:enc.encode(documentXml) },
+    { name:'word/_rels/document.xml.rels', data:enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+</Relationships>`) },
+  ];
+  const parts=[]; const centralDir=[]; let offset=0;
+  for(const f of files){
+    const nameBytes=enc.encode(f.name);
+    const crc=crc32(f.data);
+    const sz=f.data.length;
+    const lfh=new Uint8Array(30+nameBytes.length);
+    const dv=new DataView(lfh.buffer);
+    dv.setUint32(0,0x04034b50,true); dv.setUint16(4,20,true); dv.setUint16(6,0,true);
+    dv.setUint16(8,0,true); dv.setUint16(10,0,true); dv.setUint16(12,0,true);
+    dv.setUint32(14,crc,true); dv.setUint32(18,sz,true); dv.setUint32(22,sz,true);
+    dv.setUint16(26,nameBytes.length,true); dv.setUint16(28,0,true);
+    lfh.set(nameBytes,30);
+    parts.push(lfh); parts.push(f.data);
+    const cd=new Uint8Array(46+nameBytes.length);
+    const cdv=new DataView(cd.buffer);
+    cdv.setUint32(0,0x02014b50,true); cdv.setUint16(4,20,true); cdv.setUint16(6,20,true);
+    cdv.setUint16(8,0,true); cdv.setUint16(10,0,true); cdv.setUint16(12,0,true);
+    cdv.setUint16(14,0,true); cdv.setUint32(16,crc,true); cdv.setUint32(20,sz,true);
+    cdv.setUint32(24,sz,true); cdv.setUint16(28,nameBytes.length,true); cdv.setUint16(30,0,true);
+    cdv.setUint16(32,0,true); cdv.setUint16(34,0,true); cdv.setUint16(36,0,true);
+    cdv.setUint32(38,0,true); cdv.setUint32(42,offset,true);
+    cd.set(nameBytes,46);
+    centralDir.push(cd);
+    offset+=lfh.length+sz;
+  }
+  const cdStart=offset;
+  const cdBytes=concat(centralDir);
+  const eocd=new Uint8Array(22);
+  const edv=new DataView(eocd.buffer);
+  edv.setUint32(0,0x06054b50,true); edv.setUint16(4,0,true); edv.setUint16(6,0,true);
+  edv.setUint16(8,files.length,true); edv.setUint16(10,files.length,true);
+  edv.setUint32(12,cdBytes.length,true); edv.setUint32(16,cdStart,true); edv.setUint16(20,0,true);
+  const all=concat([...parts,cdBytes,eocd]);
+  return new Blob([all],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+}
+
+function concat(arrays){ const total=arrays.reduce((a,b)=>a+b.length,0); const out=new Uint8Array(total); let off=0; for(const a of arrays){ out.set(a,off); off+=a.length; } return out; }
+
+function crc32(data){
+  let t=[];
+  for(let i=0;i<256;i++){ let c=i; for(let j=0;j<8;j++) c=c&1?(0xEDB88320^(c>>>1)):(c>>>1); t[i]=c; }
+  let crc=0xFFFFFFFF;
+  for(let i=0;i<data.length;i++) crc=(crc>>>8)^t[(crc^data[i])&0xFF];
+  return (crc^0xFFFFFFFF)>>>0;
+}
+
+// ============================================================
+//  TABS & INIT
+// ============================================================
+function initTabs(){
+  document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      const id=tab.dataset.tab;
+      if(id===currentTab)return;
+      currentTab=id;
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      renderByTab();
+    });
+  });
+  document.getElementById('globalRefresh')?.addEventListener('click',fullRefresh);
+  document.getElementById('btnExportWord')?.addEventListener('click',exportWord);
+}
+
+function esc(s){ if(!s)return''; return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+function updateClockUI(){ const el=document.getElementById('liveClock'); if(el)el.textContent=new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+setInterval(updateClockUI,1000); updateClockUI();
+
+window.onload=async()=>{
+  initTabs();
+  // Chưa có token → chờ đăng nhập (đăng nhập xong sẽ tự tải dữ liệu)
+  if(sessionStorage.getItem('bc_token')){ const o=document.getElementById('loginOverlay'); if(o) o.style.display='none'; await fullRefresh(); }
+};
+window.fullRefresh=fullRefresh;
+window.toggleCollapse=toggleCollapse;
+window.toggleSheet=toggleSheet;
+</script>
+
+<!-- ===== LOGIN SECURITY ===== -->
+<script>
+
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_MS   = 60 * 1000;
+let   attempts     = 0;
+let   lockedUntil  = 0;
+
+const loginOverlay   = document.getElementById("loginOverlay");
+const loginPassword  = document.getElementById("loginPassword");
+const loginBtn       = document.getElementById("loginBtn");
+const loginError     = document.getElementById("loginError");
+const togglePassword = document.getElementById("togglePassword");
+
+window.addEventListener("load", () => {
+  loginPassword.focus();
+});
+
+loginPassword.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") checkLogin();
+});
+
+loginBtn.addEventListener("click", checkLogin);
+
+async function sha256(message) {
+  const msgBuffer  = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+  const hashArray  = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function checkLogin() {
+  const now = Date.now();
+
+  if (now < lockedUntil) {
+    const remaining = Math.ceil((lockedUntil - now) / 1000);
+    showError("Quá nhiều lần thử sai. Vui lòng đợi " + remaining + " giây.");
+    return;
+  }
+
+  const pass = loginPassword.value;
+
+  if (!pass) {
+    showError("Vui lòng nhập mật khẩu!");
+    return;
+  }
+
+  loginBtn.disabled = true;
+  let ok = false;
+  try {
+    const r = await fetch("/baocao/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: pass }) });
+    const j = await r.json();
+    if (r.ok && j.token) { sessionStorage.setItem("bc_token", j.token); ok = true; }
+  } catch (e) {
+    loginBtn.disabled = false;
+    showError("Không kết nối được máy chủ.");
+    return;
+  }
+  loginBtn.disabled = false;
+
+  if (ok) {
+    attempts = 0;
+    loginOverlay.style.display = "none";
+    fullRefresh();
+  } else {
+    attempts++;
+
+    if (attempts >= MAX_ATTEMPTS) {
+      lockedUntil            = Date.now() + LOCKOUT_MS;
+      attempts               = 0;
+      loginPassword.disabled = true;
+      loginBtn.disabled      = true;
+      showError("Sai mật khẩu! Tài khoản bị khoá 60 giây.");
+
+      setTimeout(() => {
+        loginPassword.disabled   = false;
+        loginBtn.disabled        = false;
+        loginPassword.value      = "";
+        loginError.style.display = "none";
+        loginPassword.focus();
+      }, LOCKOUT_MS);
+
+    } else {
+      showError("Sai mật khẩu! Còn " + (MAX_ATTEMPTS - attempts) + " lần thử.");
+    }
+
+    loginPassword.value = "";
+    loginPassword.focus();
+    shakeCard();
+  }
+}
+
+function showError(msg) {
+  loginError.textContent   = msg;
+  loginError.style.display = "block";
+}
+
+function shakeCard() {
+  loginOverlay.querySelector(".login-card").animate([
+    { transform: "translateX(0)"    },
+    { transform: "translateX(-8px)" },
+    { transform: "translateX(8px)"  },
+    { transform: "translateX(0)"    }
+  ], { duration: 300 });
+}
+
+togglePassword.addEventListener("click", () => {
+  if (loginPassword.type === "password") {
+    loginPassword.type         = "text";
+    togglePassword.textContent = "🙈";
+  } else {
+    loginPassword.type         = "password";
+    togglePassword.textContent = "👁️";
+  }
+});
+</script>
+
+<!-- Floating Back Button JS -->
+<script>
+(function () {
+  const btn = document.getElementById("backBtn");
+  const THRESHOLD = 10;
+  let isDragging = false, isTouchOnBtn = false;
+  let startTX = 0, startTY = 0, startBX = 0, startBY = 0;
+
+  btn.addEventListener("touchstart", function (e) {
+    isTouchOnBtn = true;
+    isDragging = false;
+    const touch = e.touches[0];
+    startTX = touch.clientX;
+    startTY = touch.clientY;
+    const r = btn.getBoundingClientRect();
+    startBX = r.left; startBY = r.top;
+    btn.style.left = startBX + "px";
+    btn.style.top  = startBY + "px";
+    btn.style.right = btn.style.bottom = "auto";
+  }, { passive: true });
+
+  document.addEventListener("touchmove", function (e) {
+    if (!isTouchOnBtn) return;
+    const t = e.touches[0];
+    const dx = t.clientX - startTX, dy = t.clientY - startTY;
+    if (!isDragging && Math.hypot(dx, dy) < THRESHOLD) return;
+    isDragging = true;
+    e.preventDefault();
+    const maxX = window.innerWidth  - btn.offsetWidth;
+    const maxY = window.innerHeight - btn.offsetHeight;
+    btn.style.left = Math.max(0, Math.min(startBX + dx, maxX)) + "px";
+    btn.style.top  = Math.max(0, Math.min(startBY + dy, maxY)) + "px";
+  }, { passive: false });
+
+  document.addEventListener("touchend", function () {
+    isTouchOnBtn = false;
+    setTimeout(() => { isDragging = false; }, 120);
+  });
+
+  btn.addEventListener("click", function (e) {
+    if (isDragging) return;
+    e.preventDefault();
+    if (window.history.length > 1) {
+      history.back();
+    } else {
+      const parts = window.location.pathname.split("/");
+      parts.pop();
+      window.location.href = (parts.join("/") || "/") + "/index.html";
+    }
+  });
+})();
+</script>
+</body>
+</html>
