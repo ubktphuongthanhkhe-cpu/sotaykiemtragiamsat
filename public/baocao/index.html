@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Trang truy cập nhanh Báo cáo kiểm tra">
+    <title>BÁO CÁO KIỂM TRA - GIÁM SÁT</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #eef2f3 0%, #8e9eab 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 32px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            width: 100%;
+            max-width: 460px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        h1 {
+            margin: 0 0 8px 0;
+            color: #1F74AD;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+
+        /* nút mới với cấu trúc linh hoạt, chữ trắng, căn giữa, font nhỏ hơn */
+        .report-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px 12px;
+            margin-bottom: 16px;
+            background: #3498db;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* dòng chính của nút (tên file) giữ nguyên cỡ vừa phải nhưng vẫn cân đối */
+        .link-main {
+            font-size: 25px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            line-height: 1.3;
+            margin-bottom: 6px;
+        }
+
+        /* phần mô tả phụ: chữ trắng, nhỏ hơn, căn giữa */
+        .link-desc {
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.35;
+            opacity: 0.92;
+            max-width: 100%;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .report-link:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(52, 152, 219, 0.35);
+        }
+
+        .report-link:active {
+            transform: translateY(1px);
+        }
+
+        .note {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #1F74AD;
+            background: rgba(31, 116, 173, 0.08);
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: 500;
+        }
+
+        .icon-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .page-icon {
+            width: 110px;
+            height: 110px;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 8px rgba(0, 70, 40, 0.15));
+            transition: transform 0.2s;
+        }
+
+        .admin-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            padding: 8px 20px;
+            background: transparent;
+            color: #7f8c8d;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1.5px solid #c8d0d6;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .admin-link:hover {
+            background: #f0f3f5;
+            color: #555e63;
+            border-color: #aab4bb;
+        }
+
+        .admin-icon {
+            font-size: 14px;
+        }
+
+        /* Responsive nhỏ */
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px 18px;
+            }
+            h1 {
+        font-size: 18px;
+        }
+            .link-main {
+                font-size: 20px;
+            }
+            .link-desc {
+                font-size: 11px;
+            }
+            .note {
+            font-size: 12px;
+            }
+            .page-icon {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 8px rgba(0,70,40,0.2));
+    }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="icon-wrapper">
+        <!-- icon.png cùng thư mục, fallback emoji nếu lỗi -->
+        <img src="icon.png" alt="Logo" class="page-icon" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=font-size:3.2rem;>📊</span>';">
+    </div>
+    <h1>BÁO CÁO KIỂM TRA - GIÁM SÁT<br>THI HÀNH KỶ LUẬT CỦA ĐẢNG</h1>
+
+    <!-- Nút 1: Mẫu 01 với mô tả chi tiết, chữ trắng, nhỏ hơn, căn giữa -->
+    <a href="Mau01.html" class="report-link">
+        <span class="link-main">Mẫu 01</span>
+        <span class="link-desc">BÁO CÁO SỐ LIỆU HẰNG THÁNG</span>
+        <span class="link-desc">Kiểm tra · Giám sát · Thi hành kỷ luật Đảng</span>
+    </a>
+
+    <!-- Nút 2: Mẫu 02 với mô tả chi tiết, giữ phong cách -->
+    <a href="Mau02.html" class="report-link">
+        <span class="link-main">Mẫu 02</span>
+        <span class="link-desc">BÁO CÁO 6 THÁNG - NĂM - NHIỆM KỲ</span>
+        <span class="link-desc">Tổng hợp kết quả, phương hướng nhiệm vụ</span>
+    </a>
+
+    <p class="note">Nhấn trực tiếp vào nút để mở tệp báo cáo</p>
+
+    <a href="../" class="admin-link" style="margin-right:6px"><span class="admin-icon">←</span> Về Sổ tay</a>
+    <!-- Nút Truy cập quản trị -->
+    <a href="admin.html" class="admin-link">
+        <span class="admin-icon">⚙️</span> Truy cập quản trị
+    </a>
+</div>
+</body>
+</html>
