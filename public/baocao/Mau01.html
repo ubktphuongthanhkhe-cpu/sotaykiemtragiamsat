@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tạo Báo cáo Kiểm tra, Giám sát, Thi hành kỷ luật Đảng</title>
+<script src="https://unpkg.com/docx@8.0.0/build/index.js"></script>
+<script src="config.js"></script>
+<script src="chibo.js"></script>
+<style>
+  :root {
+    --primary: #1d4ed8;
+    --secondary: #0891b2;
+    --accent: #16a34a;
+    --light: #f0f9ff;
+    --dark: #1e293b;
+    --gray: #cbd5e0;
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: "Times New Roman", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6; color: var(--dark); background: linear-gradient(180deg, #eaf4ff 0%, #f5f9ff 100%);
+    padding: 20px; max-width: 1100px; margin: 0 auto;
+  }
+  
+  header { 
+    text-align: center; 
+    margin-bottom: 30px; 
+    padding-bottom: 20px; 
+    border-bottom: 1px solid var(--gray); 
+  }
+  
+  h1 { 
+    color: #dc2626; 
+    margin-bottom: 10px; 
+    font-size: 20px; 
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 1px 1px 0 #ffffff;
+    border-top: 2px solid #fb923c;
+  }
+  
+  .small-sub {
+    font-size: 20px;
+    font-weight: normal;
+    display: block;
+    margin-top: 5px;
+  }
+
+  .subtitle { 
+    color: var(--secondary); 
+    font-size: 16px; 
+    margin-bottom: 20px; 
+    text-align: center;
+    border-bottom: 2px solid #fb923c;
+    padding: 8px 0;
+    font-weight: bold;
+  }
+  
+  .info-section { 
+    background: #ffffff; 
+    padding: 20px; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); 
+    margin-bottom: 20px; 
+  }
+  
+  .info-row { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px; }
+  
+  .info-item { flex: 1; min-width: 200px; }
+  
+  label { 
+    display: block; 
+    font-weight: bold; 
+    margin-bottom: 5px; 
+    color: var(--primary); 
+  }
+  
+  input[type="text"] { 
+    width: 100%; 
+    padding: 10px; 
+    border: 1px solid var(--gray); 
+    border-radius: 4px; 
+    font-size: 15px; 
+    font-family: "Times New Roman", serif;
+  }
+
+  /* ===== CHI BỘ SEARCH (full-screen picker) ===== */
+  .chibo-wrapper { position: relative; }
+  .chibo-wrapper input { padding-right: 34px; cursor: pointer; }
+  .chibo-clear {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    cursor: pointer; color: #999; font-size: 16px; line-height: 1;
+    display: none;
+  }
+  /* backdrop, full screen */
+  .chibo-dropdown {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 9998;
+    align-items: flex-start; justify-content: center;
+    padding-top: 4vh; box-sizing: border-box;
+  }
+  .chibo-dropdown.open { display: flex; }
+  /* centered panel */
+  .chibo-modal-box {
+    background: white; border-radius: 12px;
+    width: 92%; max-width: 640px;
+    max-height: var(--chibo-max-h, 88vh);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    font-family: "Times New Roman", serif;
+  }
+  .chibo-modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 18px; background: var(--primary, #1a365d); color: #fff;
+    flex: none;
+  }
+  .chibo-modal-header h3 { font-size: 17px; margin: 0; }
+  .chibo-modal-close {
+    background: none; border: none; font-size: 22px; cursor: pointer;
+    color: #fff; opacity: 0.85; padding: 0 6px; line-height: 1;
+    transition: opacity 0.2s;
+  }
+  .chibo-modal-close:hover { opacity: 1; color: #ffb4b4; }
+  /* ô tìm kiếm cố định ngay dưới tiêu đề, luôn nhìn thấy được kể cả khi bàn phím mở */
+  .chibo-modal-search-wrap {
+    padding: 10px 14px; background: #edf2f7;
+    border-bottom: 1px solid #cbd5e0; flex: none;
+  }
+  .chibo-modal-search {
+    width: 100%; padding: 9px 12px;
+    border: 1px solid #90cdf4; border-radius: 6px;
+    font-size: 15px; font-family: "Times New Roman", serif;
+    outline: none; background: #fff; box-sizing: border-box;
+  }
+  .chibo-modal-search:focus { border-color: #2b6cb0; }
+  .chibo-modal-body { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+  .chibo-option {
+    padding: 11px 16px; cursor: pointer; font-size: 15px;
+    font-family: "Times New Roman", serif; border-bottom: 1px solid #f0f0f0;
+    transition: background 0.15s;
+  }
+  .chibo-option:hover, .chibo-option.active { background: #e8f0fe; }
+  .chibo-option mark { background: #fff176; color: inherit; font-weight: bold; padding: 0; }
+  .chibo-no-result { padding: 16px; color: #999; font-style: italic; font-size: 14px; text-align: center; }
+  
+  .chibo-group-header {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    background: #1a365d;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+    border-bottom: 1px solid #2b6cb0;
+  }
+  .chibo-group-header:hover { background: #2b6cb0; }
+  .chibo-group-header .nhom-arrow {
+    font-size: 11px; transition: transform 0.2s;
+  }
+  .chibo-group-header.open .nhom-arrow { transform: rotate(90deg); }
+  .chibo-group-items { display: none; }
+  .chibo-group-items.open { display: block; }
+  .chibo-group-search-wrap {
+    padding: 8px 12px;
+    background: #edf2f7;
+    border-bottom: 1px solid #cbd5e0;
+    position: sticky; top: 0; z-index: 1;
+  }
+  .chibo-group-search {
+    width: 100%; padding: 7px 10px;
+    border: 1px solid #90cdf4; border-radius: 4px;
+    font-size: 14px; font-family: "Times New Roman", serif;
+    outline: none; background: #fff; box-sizing: border-box;
+  }
+  .chibo-group-search:focus { border-color: #2b6cb0; }
+  .chibo-group-count {
+    font-size: 11px; font-weight: normal;
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px; padding: 1px 7px; margin-left: 6px;
+  }
+  @media (max-width: 520px) {
+    .chibo-dropdown { padding-top: 0; }
+    .chibo-modal-box { width: 100%; height: 100%; max-height: 100%; border-radius: 0; }
+  }
+
+  /* ===== MODAL GỬI BÁO CÁO ===== */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 9999;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: white; border-radius: 12px; padding: 28px 32px;
+    max-width: 440px; width: 92%; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    text-align: center; font-family: "Times New Roman", serif;
+  }
+  .modal-box h3 { color: var(--primary); margin-bottom: 12px; font-size: 18px; }
+  .modal-box p  { color: #555; font-size: 15px; margin-bottom: 18px; line-height: 1.6; }
+  .modal-status { font-size: 15px; margin-top: 10px; min-height: 24px; font-weight: bold; }
+  .modal-status.ok    { color: #38a169; }
+  .modal-status.err   { color: #e53e3e; }
+  .modal-status.wait  { color: #2b6cb0; }
+  .modal-actions { display: flex; gap: 12px; justify-content: center; margin-top: 18px; }
+  .modal-btn {
+    padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer;
+    font-size: 15px; font-weight: bold; font-family: "Times New Roman", serif;
+    transition: opacity 0.2s;
+  }
+  .modal-btn:hover { opacity: 0.85; }
+  .modal-btn-confirm { background: #38a169; color: white; }
+  .modal-btn-cancel  { background: #e2e8f0; color: #444; }
+  .btn-send { background: #d97706; }
+  .spinner {
+    display: inline-block; width: 18px; height: 18px;
+    border: 3px solid #ccc; border-top-color: var(--secondary);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    vertical-align: middle; margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== MODAL NHẬP NỘI DUNG LỚN ===== */
+  .input-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 10000;
+    align-items: center; justify-content: center;
+  }
+  .input-modal-overlay.open { display: flex; }
+  
+  .input-modal-box {
+    background: white; border-radius: 12px; padding: 24px 28px;
+    width: 90%; max-width: 700px; max-height: 85vh;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    display: flex; flex-direction: column;
+    font-family: "Times New Roman", serif;
+  }
+  
+  .input-modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  
+  .input-modal-header h3 {
+    color: var(--primary); font-size: 18px; margin: 0;
+  }
+  
+  .input-modal-close {
+    background: none; border: none; font-size: 24px; cursor: pointer;
+    color: #999; padding: 0 8px; transition: color 0.2s;
+  }
+  
+  .input-modal-close:hover { color: #e53e3e; }
+  
+  .input-modal-textarea {
+    width: 100%; flex: 1; min-height: 250px;
+    padding: 16px; border: 2px solid #cbd5e0;
+    border-radius: 8px; font-size: 16px; font-family: "Times New Roman", serif;
+    resize: vertical; line-height: 1.8;
+    transition: border-color 0.2s;
+  }
+  
+  .input-modal-textarea:focus {
+    outline: none; border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(43,108,176,0.1);
+  }
+  
+  .input-modal-footer {
+    display: flex; gap: 12px; justify-content: center;
+    margin-top: 16px; padding-top: 16px;
+    border-top: 2px solid #e2e8f0;
+  }
+  
+  .input-modal-footer .modal-btn {
+    min-width: 120px;
+  }
+  
+  .modal-btn-save {
+    background: var(--accent); color: white;
+    font-size: 16px; padding: 12px 28px;
+  }
+  
+  .modal-btn-cancel-input {
+    background: #e2e8f0; color: #444;
+    font-size: 16px; padding: 12px 28px;
+  }
+
+  /* ===== TABLE INPUT STYLES ===== */
+  .table-input, .table-textarea {
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+  
+  .table-input:hover, .table-textarea:hover {
+    background-color: #fef9e6;
+    border-color: var(--secondary);
+  }
+  
+  .table-input:focus, .table-textarea:focus {
+    outline: 2px solid var(--secondary);
+    outline-offset: -2px;
+    background-color: #fffef7;
+  }
+
+  textarea {
+    width: 100%; 
+    min-height: 120px; 
+    padding: 10px; 
+    margin-top: 10px; 
+    border: 1px solid var(--gray);
+    border-radius: 4px; 
+    resize: vertical; 
+    font-family: "Times New Roman", serif;
+    font-size: 15px;
+  }
+
+  .section-title {
+    margin: 25px 0 5px; 
+    color: var(--primary); 
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--gray); 
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .section-description {
+    font-size: 15px; 
+    color: #666; 
+    margin-bottom: 10px; 
+    font-style: italic;
+  }
+
+  .btn-bar { 
+    margin-top: 30px; 
+    text-align: center; 
+    display: flex;
+    flex-direction: column;
+    gap:8px;
+    align-items: center;
+  }
+  
+  .btn {
+    padding: 12px 24px; 
+    background: var(--accent); 
+    color: white; 
+    border: none;
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    font-weight: bold; 
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    font-family: "Times New Roman", serif;
+  }
+  
+  .btn:hover { 
+    opacity: 0.9; 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .btn-unencrypted { 
+    background: var(--secondary); 
+  }
+  
+  .guide-section {
+    margin-bottom: 20px;
+  }
+
+  .accordion-guide {
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    padding: 15px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s;
+    font-family: "Times New Roman", serif;
+  }
+
+  .accordion-guide:hover {
+    background: #15803d;
+  }
+
+  .accordion-guide::after {
+    content: '\002B';
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .accordion-guide.active::after {
+    content: '\2212';
+  }
+
+  .guide-content {
+    background: white;
+    padding: 0 20px;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-left: 1px solid var(--accent);
+    border-right: 1px solid var(--gray);
+    border-bottom: 1px solid var(--gray);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out, padding 0.2s ease-out;
+  }
+
+  .guide-content.active {
+    padding: 20px;
+    max-height: 1000px;
+  }
+
+  .guide-content ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+  }
+
+  .deadline-info {
+    background: #fef3c7;
+    border: 1px solid #fbbf24;
+    border-radius: 6px;
+    padding: 15px;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .deadline-info h4 {
+    color: #b45309;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .deadline-info ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+    color: #92400e;
+  }
+
+  .deadline-info li {
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+
+  .deadline-info p {
+    color: #92400e;
+    line-height: 1.5;
+  }
+
+  .table-section {
+    margin-top: 20px;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  th, td {
+    border: 1px solid var(--gray);
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: var(--primary);
+    color: white;
+    font-weight: bold;
+  }
+
+  .table-title {
+    background-color: var(--secondary);
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    font-size: 16px;
+  }
+
+  tbody tr:nth-child(odd) td {
+    background-color: #fafbfd;
+  }
+
+  tbody tr:nth-child(even) td {
+    background-color: #f5f7fa;
+  }
+
+  tbody tr:hover td {
+    background-color: #fef9e6;
+  }
+
+  .table-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: "Times New Roman", serif;
+    font-size: 14px;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+
+  .table-textarea {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: "Times New Roman", serif;
+    font-size: 14px;
+    padding: 5px;
+    resize: vertical;
+    min-height: 60px;
+    box-sizing: border-box;
+  }
+
+  .stats-row {
+    background: #fef3c7;
+    border-top: 2px dashed #f59e0b;
+    padding: 12px 0;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .info-row {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+     .btn-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .btn {
+    margin: 0;
+  }
+}
+    
+    table {
+      font-size: 12px;
+    }
+
+    .input-modal-box {
+      width: 95%;
+      max-height: 90vh;
+      padding: 16px;
+    }
+    
+    .input-modal-textarea {
+      min-height: 200px;
+      font-size: 14px;
+    }
+  }
+</style>
+<style>
+  .top-notice {
+    background: linear-gradient(90deg, #dc2626, #ea580c);
+    color: #fef3c7;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 12px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    text-shadow: 1px 1px 0 #000;
+    font-weight: bold;
+  }
+
+  .site-footer {
+    background: linear-gradient(90deg, #dc2626, #ea580c);
+    color: #fef3c7;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 13px;
+    margin-top: 30px;
+    border-radius: 4px;
+    text-shadow: 1px 1px 0 #000;
+    font-weight: bold;
+  }
+  
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .btn:disabled:hover {
+    opacity: 0.6;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .table-section > .btn{
+  display:block;
+  margin:10px auto 0;
+}
+
+  /* ===== Ô thời gian báo cáo (tự động, chỉ đọc) ===== */
+  #thoigian[readonly] {
+    background: #eef2ff;
+    color: var(--primary);
+    font-weight: bold;
+    cursor: default;
+  }
+
+  .period-note {
+    margin-top: 8px;
+    background: #ecfeff;
+    border: 1px solid #67e8f9;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #0e7490;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* ===== Thông báo khóa - ngoài khung giờ 05-11, form vẫn hiển thị nhưng bị khóa ===== */
+  .locked-notice {
+    display: none;
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #92400e;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .locked-notice.show { display: block; }
+  .locked-notice .lock-next {
+    display: inline-block;
+    margin-top: 6px;
+    background: #ffffff;
+    border: 1px solid #f59e0b;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-weight: bold;
+    color: #b45309;
+  }
+
+  .form-locked input:disabled,
+  .form-locked textarea:disabled,
+  .form-locked button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #f1f5f9;
+  }
+</style>
+</head>
+<body>
+<div class="top-notice">
+  ỨNG DỤNG LƯU HÀNH NỘI BỘ
+</div>
+<header>
+  <h1>
+    BÁO CÁO SỐ LIỆU HẰNG THÁNG<br>
+    <span class="small-sub">(KIỂM TRA, GIÁM SÁT, THI HÀNH KỶ LUẬT ĐẢNG)</span>
+  </h1>
+  <p class="subtitle">MẪU 01CB - (Dành cho Chi bộ)</p>
+  <div class="guide-section">
+    <button class="accordion accordion-guide">📋 HƯỚNG DẪN TẠO BÁO CÁO</button>
+    <div class="guide-content">
+      <ul>
+        <b>Cách tạo báo cáo:</b>  
+        <li>🔍 Chọn nhóm, nhập số hoặc tên để tìm chi bộ... (thời gian tự động điền, có thể chỉnh sửa nếu muốn)</li>   
+        <li>📝 Nhập thông tin chi tiết vào các bảng tương ứng với từng phần của báo cáo.</li>
+        <li>📄 Chọn <b>Tải Word để lưu</b> để tải báo cáo dưới dạng tệp DOCX.</li>
+        <li>📤 Chọn <b>Gửi báo cáo</b> để gửi báo cáo cho UBKT phường.</li>
+      </ul>
+      <div class="deadline-info">
+        <h4>⏰ THỜI GIAN MỞ ĐỂ TẠO BÁO CÁO</h4>
+        <ul>
+          <li>Bắt đầu từ ngày 05 đến ngày 11 hằng tháng.</li>
+          <li>Mốc thời gian báo cáo từ ngày 09 tháng trước đến ngày 10 của tháng báo cáo.</li>
+          <li>Số liệu sau ngày 10 là chuyển qua báo cáo tháng sau.</li>
+        </ul>
+        <p><strong>* Lưu ý:</strong> Số liệu báo cáo là số liệu đã được kiểm tra, giám sát, đã tiến hành <strong>KẾT LUẬN</strong> và đã đầy đủ hồ sơ liên quan.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="locked-notice" id="locked-notice">
+  🔒 <strong>Chức năng lập báo cáo hiện đang đóng.</strong><br>
+  Báo cáo số liệu tháng chỉ được lập từ <strong>ngày 05</strong> đến <strong>ngày 11</strong> hằng tháng (để báo cáo số liệu của <strong>tháng hiện tại</strong>).
+  <br>
+  <span class="lock-next">📅 Đợt lập báo cáo tiếp theo: <span id="lock-next-date"></span></span>
+</div>
+
+<div class="info-section">
+  <div class="info-row">
+    <div class="info-item">
+      <label for="chibo-search">Chi bộ:</label>
+      <div class="chibo-wrapper" id="chibo-wrapper">
+        <input type="text" id="chibo-search" autocomplete="off" readonly
+               placeholder="🔍 Chạm để chọn chi bộ..."
+               onclick="chiBoOpenModal()"
+               onkeydown="chiBoKeyDown(event)">
+        <span class="chibo-clear" id="chibo-clear" onclick="chiBoClear()">✕</span>
+        <div class="chibo-dropdown" id="chibo-dropdown" onclick="chiBoBackdropClick(event)"></div>
+        <input type="hidden" id="chibo" value="">
+      </div>
+    </div>
+    <div class="info-item">
+      <label for="thoigian">Thời gian báo cáo:</label>
+      <input type="text" id="thoigian" placeholder="Tháng ... Năm ..." readonly>
+      <div class="period-note" id="period-note"></div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section-title">I. KIỂM TRA</h2>
+<div class="table-section">
+  <table id="kiemtra-table">
+    <thead>
+      <tr>
+        <th width="5%">STT</th>
+        <th width="20%">Họ và tên đảng viên được kiểm tra</th>
+        <th width="15%">Chức vụ</th>
+        <th width="35%">Nội dung kiểm tra</th>
+        <th width="25%">Kết quả thực hiện</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><input type="text" class="table-input" placeholder="vd: Nguyễn Văn A" onclick="openInputModal(this)" readonly></td>
+        <td><input type="text" class="table-input" placeholder="vd: Chi ủy viên Chi bộ" onclick="openInputModal(this)" readonly></td>
+        <td><textarea class="table-textarea" placeholder="vd: Nội dung kiểm tra..." onclick="openInputModal(this)" readonly></textarea></td>
+        <td><textarea class="table-textarea" placeholder="vd: Kết quả thực hiện" onclick="openInputModal(this)" readonly></textarea></td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <button class="btn" onclick="addRow('kiemtra-table')" style="width: auto; padding: 8px 16px; font-size: 14px; background: var(--secondary);">+ Thêm dòng</button>
+</div>
+
+<h2 class="section-title">II. GIÁM SÁT CHUYÊN ĐỀ</h2>
+<div class="table-section">
+  <table id="giamsat-table">
+    <thead>
+      <tr>
+        <th width="5%">STT</th>
+        <th width="20%">Họ và tên đảng viên được giám sát</th>
+        <th width="15%">Chức vụ</th>
+        <th width="35%">Nội dung giám sát</th>
+        <th width="25%">Kết quả thực hiện</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><input type="text" class="table-input" placeholder="vd: Lê Văn B" onclick="openInputModal(this)" readonly></td>
+        <td><input type="text" class="table-input" placeholder="vd: Đảng viên" onclick="openInputModal(this)" readonly></td>
+        <td><textarea class="table-textarea" placeholder="vd: Nội dung giám sát" onclick="openInputModal(this)" readonly></textarea></td>
+        <td><textarea class="table-textarea" placeholder="vd: Kết quả thực hiện" onclick="openInputModal(this)" readonly></textarea></td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <button class="btn" onclick="addRow('giamsat-table')" style="width: auto; padding: 8px 16px; font-size: 14px; background: var(--secondary);">+ Thêm dòng</button>
+</div>
+
+<h2 class="section-title">III. GIÁM SÁT THƯỜNG XUYÊN</h2>
+<div class="table-section">
+  <table id="giamsatthuongxuyen-table">
+    <thead>
+      <tr>
+        <th width="5%">STT</th>
+        <th width="20%">Họ và tên đảng viên được giám sát</th>
+        <th width="15%">Chức vụ</th>
+        <th width="35%">Nội dung giám sát</th>
+        <th width="25%">Kết quả thực hiện</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><input type="text" class="table-input" placeholder="vd: Lê Văn B" onclick="openInputModal(this)" readonly></td>
+        <td><input type="text" class="table-input" placeholder="vd: Đảng viên" onclick="openInputModal(this)" readonly></td>
+        <td><textarea class="table-textarea" placeholder="vd: Nội dung giám sát" onclick="openInputModal(this)" readonly></textarea></td>
+        <td><textarea class="table-textarea" placeholder="vd: Kết quả thực hiện" onclick="openInputModal(this)" readonly></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="btn" onclick="addRow('giamsatthuongxuyen-table')" style="width: auto; padding: 8px 16px; font-size: 14px; background: var(--secondary);">+ Thêm dòng</button>
+</div>
+
+<h2 class="section-title">IV. GIẢI QUYẾT ĐƠN</h2>
+<div class="table-section">
+  <table id="giaiquyetdon-table">
+    <thead>
+      <tr>
+        <th width="5%">STT</th>
+        <th width="20%">Họ và tên đảng viên</th>
+        <th width="15%">Chức vụ</th>
+        <th width="35%">Nội dung giải quyết đơn</th>
+        <th width="25%">Kết quả giải quyết</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><input type="text" class="table-input" placeholder="vd: Trần Văn C" onclick="openInputModal(this)" readonly></td>
+        <td><input type="text" class="table-input" placeholder="vd: Đảng viên" onclick="openInputModal(this)" readonly></td>
+        <td><textarea class="table-textarea" placeholder="vd: Nội dung đơn" onclick="openInputModal(this)" readonly></textarea></td>
+        <td><textarea class="table-textarea" placeholder="vd: Kết quả giải quyết" onclick="openInputModal(this)" readonly></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="btn" onclick="addRow('giaiquyetdon-table')" style="width: auto; padding: 8px 16px; font-size: 14px; background: var(--secondary);">+ Thêm dòng</button>
+</div>
+
+<h2 class="section-title">V. THI HÀNH KỶ LUẬT ĐẢNG</h2>
+<div class="table-section">
+  <table id="thihanh-table">
+    <thead>
+      <tr>
+        <th width="5%">STT</th>
+        <th width="20%">Họ và tên đảng viên bị kỷ luật</th>
+        <th width="15%">Chức vụ</th>
+        <th width="15%">Hình thức kỷ luật</th>
+        <th width="30%">Nội dung vi phạm</th>
+        <th width="15%">Số Quyết định</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><input type="text" class="table-input" placeholder="vd: Đặng Văn D" onclick="openInputModal(this)" readonly></td>
+        <td><input type="text" class="table-input" placeholder="vd: Đảng viên" onclick="openInputModal(this)" readonly></td>
+        <td><input type="text" class="table-input" placeholder="vd: Khiển trách" onclick="openInputModal(this)" readonly></td>
+        <td><textarea class="table-textarea" placeholder="Nhập nội dung vi phạm" onclick="openInputModal(this)" readonly></textarea></td>
+        <td><input type="text" class="table-input" placeholder="vd: .....-QĐ/CB" onclick="openInputModal(this)" readonly></td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="btn" onclick="addRow('thihanh-table')" style="width: auto; padding: 8px 16px; font-size: 14px; background: var(--secondary);">+ Thêm dòng</button>
+</div>
+
+<!-- MODAL NHẬP NỘI DUNG LỚN -->
+<div class="input-modal-overlay" id="input-modal">
+  <div class="input-modal-box">
+    <div class="input-modal-header">
+      <h3 id="input-modal-title">Nhập nội dung</h3>
+      <button class="input-modal-close" onclick="closeInputModal(false)">✕</button>
+    </div>
+    <textarea class="input-modal-textarea" id="input-modal-textarea" placeholder="Nhập nội dung tại đây..."></textarea>
+    <div class="input-modal-footer">
+      <button class="modal-btn modal-btn-cancel-input" onclick="closeInputModal(false)">Hủy</button>
+      <button class="modal-btn modal-btn-save" onclick="closeInputModal(true)">💾 Lưu</button>
+    </div>
+  </div>
+</div>
+
+<div class="btn-bar">
+  <button class="btn btn-unencrypted" onclick="exportUnencrypted()">
+    📄 Tải Word để lưu
+  </button>
+  <button class="btn btn-send" onclick="openSendModal()">
+    📤 Gửi báo cáo
+  </button>
+  <button class="btn" style="background:#6b7280" onclick="window.location.href='index.html'">
+    🏠 Về trang chủ
+  </button>
+</div>
+
+<!-- MODAL GỬI BÁO CÁO -->
+<div class="modal-overlay" id="send-modal">
+  <div class="modal-box">
+    <h3>📤 Gửi báo cáo lên Drive</h3>
+    <p>Báo cáo sẽ được tải lên Google Drive và ghi vào bảng thống kê chi bộ đã nộp.</p>
+    <p id="modal-chibo-info" style="font-weight:bold; color:var(--primary);"></p>
+    <div class="modal-status" id="modal-status"></div>
+    <div class="modal-actions" id="modal-actions">
+      <button class="modal-btn modal-btn-confirm" onclick="doSendReport()">✅ Xác nhận gửi</button>
+      <button class="modal-btn modal-btn-cancel" onclick="closeSendModal()">Hủy</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== HƯỚNG DẪN TẠO BÁO CÁO (accordion) =====
+// Gắn sự kiện bằng cách "ủy quyền" (event delegation) trên toàn trang, đăng ký ngay
+// từ đầu script để không bị ảnh hưởng nếu có lỗi JS khác xảy ra ở phía dưới.
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.accordion-guide');
+  if (!btn) return;
+  const content = btn.parentElement.querySelector('.guide-content');
+  btn.classList.toggle('active');
+  if (content) content.classList.toggle('active');
+});
+
+// ===== BIẾN LƯU TRỮ INPUT ĐANG CHỈNH SỬA =====
+let currentEditingElement = null;
+
+// ===== MỞ MODAL NHẬP NỘI DUNG =====
+function openInputModal(element) {
+  currentEditingElement = element;
+  const modal = document.getElementById('input-modal');
+  const textarea = document.getElementById('input-modal-textarea');
+  const title = document.getElementById('input-modal-title');
+  
+  const placeholder = element.placeholder || '';
+  let headerText = 'Nhập nội dung';
+  
+  if (element.closest('td')) {
+    const table = element.closest('table');
+    const headerRow = table.querySelector('thead tr');
+    const cellIndex = Array.from(element.closest('tr').children).indexOf(element.closest('td'));
+    if (headerRow && headerRow.children[cellIndex]) {
+      headerText = headerRow.children[cellIndex].textContent.trim();
+    }
+  }
+  
+  title.textContent = headerText;
+  textarea.value = element.value || '';
+  textarea.placeholder = placeholder || 'Nhập nội dung tại đây...';
+  
+  modal.classList.add('open');
+  
+  setTimeout(() => {
+    textarea.focus();
+    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+  }, 100);
+}
+
+// ===== ĐÓNG MODAL NHẬP NỘI DUNG =====
+function closeInputModal(save) {
+  const modal = document.getElementById('input-modal');
+  const textarea = document.getElementById('input-modal-textarea');
+  
+  if (save && currentEditingElement) {
+    currentEditingElement.value = textarea.value;
+    const event = new Event('input', { bubbles: true });
+    currentEditingElement.dispatchEvent(event);
+  }
+  
+  modal.classList.remove('open');
+  currentEditingElement = null;
+}
+
+// ===== ĐÓNG MODAL BẰNG PHÍM ESCAPE =====
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const inputModal = document.getElementById('input-modal');
+    if (inputModal.classList.contains('open')) {
+      closeInputModal(false);
+    }
+  }
+  
+  if (e.ctrlKey && e.key === 'Enter') {
+    const inputModal = document.getElementById('input-modal');
+    if (inputModal.classList.contains('open')) {
+      e.preventDefault();
+      closeInputModal(true);
+    }
+  }
+});
+
+// ===== DỮ LIỆU CHI BỘ =====
+const DS_CHI_BO_GS = (typeof DS_CHI_BO !== "undefined") ? DS_CHI_BO : DS_NHOM.flatMap(n => n.danhSach);
+
+// Accordion hướng dẫn: đã gắn sự kiện ở đầu script (event delegation) để tránh lỗi phụ thuộc thứ tự tải.
+document.addEventListener("DOMContentLoaded", function() {
+  // ===== Kiểm soát khung giờ lập báo cáo (chỉ mở từ ngày 05 đến ngày 11 hằng tháng) =====
+  khoiTaoThoiGianBaoCao();
+});
+
+const formatDate = (d) => {
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+// Tính tháng báo cáo (= tháng hiện tại, trong khung giờ 05-11) và khoảng thời gian số liệu
+// (từ ngày 9 tháng liền trước tháng báo cáo, đến ngày 10 của tháng báo cáo)
+function tinhKyBaoCao(now) {
+  // Tháng báo cáo = tháng hiện tại (vd: mở form 5-11/8 thì báo cáo Tháng 08)
+  const reportMonth = now.getMonth() + 1;
+  const reportYear = now.getFullYear();
+
+  // Ngày bắt đầu số liệu = ngày 9 của tháng liền trước tháng báo cáo
+  let startMonth = reportMonth - 1;
+  let startYear = reportYear;
+  if (startMonth === 0) { startMonth = 12; startYear -= 1; }
+
+  const startDate = new Date(startYear, startMonth - 1, 9);
+  const endDate = new Date(reportYear, reportMonth - 1, 10);
+
+  return { reportMonth, reportYear, startDate, endDate };
+}
+
+// Tính ngày mở đợt lập báo cáo kế tiếp (ngày 05 của tháng gần nhất)
+function ngayMoDotTiepTheo(now) {
+  const day = now.getDate();
+  if (day < 5) {
+    return new Date(now.getFullYear(), now.getMonth(), 5);
+  }
+  return new Date(now.getFullYear(), now.getMonth() + 1, 5);
+}
+
+// Khóa/mở khóa các ô nhập và nút bấm của form (giữ nguyên hiển thị, không che phủ)
+function khoaFormNhap(khoa) {
+  document.body.classList.toggle('form-locked', khoa);
+
+  // Chi bộ
+  const chiboSearch = document.getElementById('chibo-search');
+  if (chiboSearch) chiboSearch.disabled = khoa;
+  const chiboClear = document.getElementById('chibo-clear');
+  if (chiboClear) chiboClear.style.pointerEvents = khoa ? 'none' : '';
+
+  // Các bảng số liệu: input, textarea, nút "+ Thêm dòng"
+  document.querySelectorAll('.table-section input, .table-section textarea, .table-section button')
+    .forEach(el => { el.disabled = khoa; });
+
+  // Nút chính: Tải Word, Gửi báo cáo (giữ nút "Về trang chủ" hoạt động bình thường)
+  const btnWord = document.querySelector('.btn-unencrypted');
+  if (btnWord) btnWord.disabled = khoa;
+  const btnSend = document.querySelector('.btn-send');
+  if (btnSend) btnSend.disabled = khoa;
+}
+
+function khoiTaoThoiGianBaoCao() {
+  const now = new Date();
+  const day = now.getDate();
+  const trongKhungGio = (day >= 5 && day <= 11);
+
+  const notice = document.getElementById('locked-notice');
+
+  if (!trongKhungGio) {
+    document.getElementById('lock-next-date').textContent = formatDate(ngayMoDotTiepTheo(now));
+    notice.classList.add('show');
+    khoaFormNhap(true);
+  } else {
+    notice.classList.remove('show');
+    khoaFormNhap(false);
+  }
+
+  // Tháng báo cáo & khoảng thời gian số liệu luôn hiển thị (dù đang khóa hay không)
+  const ky = tinhKyBaoCao(now);
+  document.getElementById('thoigian').value =
+    `Tháng ${String(ky.reportMonth).padStart(2, '0')} Năm ${ky.reportYear}`;
+  document.getElementById('period-note').textContent =
+    `(từ ${formatDate(ky.startDate)} đến ${formatDate(ky.endDate)})`;
+}
+
+// Thêm dòng vào bảng
+function addRow(tableId) {
+  const table = document.getElementById(tableId);
+  const tbody = table.getElementsByTagName('tbody')[0];
+  const rows = tbody.getElementsByTagName('tr');
+  const newRow = rows[rows.length - 1].cloneNode(true);
+  
+  const inputs = newRow.getElementsByTagName('input');
+  for (let i = 0; i < inputs.length; i++) {
+    inputs[i].value = '';
+    inputs[i].setAttribute('onclick', 'openInputModal(this)');
+    inputs[i].setAttribute('readonly', true);
+  }
+  
+  const textareas = newRow.getElementsByTagName('textarea');
+  for (let i = 0; i < textareas.length; i++) {
+    textareas[i].value = '';
+    textareas[i].setAttribute('onclick', 'openInputModal(this)');
+    textareas[i].setAttribute('readonly', true);
+  }
+  
+  const firstCell = newRow.getElementsByTagName('td')[0];
+  firstCell.textContent = rows.length + 1;
+  
+  tbody.appendChild(newRow);
+}
+
+// ===== HÀM TÍNH SỐ LIỆU THỐNG KÊ TỪ CÁC BẢNG =====
+function calculateStatistics() {
+  // Đếm số dòng có dữ liệu trong bảng KIỂM TRA
+  const kiemTraRows = document.getElementById("kiemtra-table").getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  let soKiemTra = 0;
+  for (let i = 0; i < kiemTraRows.length; i++) {
+    const inputs = kiemTraRows[i].getElementsByTagName('input');
+    const hoTen = inputs[0]?.value.trim() || '';
+    if (hoTen !== '') {
+      soKiemTra++;
+    }
+  }
+  
+  // Đếm số dòng có dữ liệu trong bảng GIÁM SÁT CHUYÊN ĐỀ
+  const giamSatRows = document.getElementById("giamsat-table").getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  let soGiamSat = 0;
+  for (let i = 0; i < giamSatRows.length; i++) {
+    const inputs = giamSatRows[i].getElementsByTagName('input');
+    const hoTen = inputs[0]?.value.trim() || '';
+    if (hoTen !== '') {
+      soGiamSat++;
+    }
+  }
+  
+  // Đếm số dòng có dữ liệu trong bảng GIÁM SÁT THƯỜNG XUYÊN
+  const giamSatTXRows = document.getElementById("giamsatthuongxuyen-table").getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  let soGiamSatThuongXuyen = 0;
+  for (let i = 0; i < giamSatTXRows.length; i++) {
+    const inputs = giamSatTXRows[i].getElementsByTagName('input');
+    const hoTen = inputs[0]?.value.trim() || '';
+    if (hoTen !== '') {
+      soGiamSatThuongXuyen++;
+    }
+  }
+  
+  // Đếm số dòng có dữ liệu trong bảng GIẢI QUYẾT ĐƠN
+  const giaiQuyetRows = document.getElementById("giaiquyetdon-table").getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  let soGiaiQuyetDon = 0;
+  for (let i = 0; i < giaiQuyetRows.length; i++) {
+    const inputs = giaiQuyetRows[i].getElementsByTagName('input');
+    const hoTen = inputs[0]?.value.trim() || '';
+    if (hoTen !== '') {
+      soGiaiQuyetDon++;
+    }
+  }
+  
+  // Đếm số dòng có dữ liệu trong bảng THI HÀNH KỶ LUẬT
+  const thiHanhRows = document.getElementById("thihanh-table").getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  let soThiHanhKyLuat = 0;
+  for (let i = 0; i < thiHanhRows.length; i++) {
+    const inputs = thiHanhRows[i].getElementsByTagName('input');
+    const hoTen = inputs[0]?.value.trim() || '';
+    if (hoTen !== '') {
+      soThiHanhKyLuat++;
+    }
+  }
+  
+  return {
+    soKiemTra: soKiemTra,
+    soGiamSat: soGiamSat,
+    soGiamSatThuongXuyen: soGiamSatThuongXuyen,
+    soGiaiQuyetDon: soGiaiQuyetDon,
+    soThiHanhKyLuat: soThiHanhKyLuat
+  };
+}
+
+// ===== TẠO FILE WORD =====
+function createWordDocument(filename) {
+  const { 
+    Document, Paragraph, TextRun, Table, TableRow, TableCell, 
+    WidthType, AlignmentType, Packer
+  } = docx;
+
+  const children = [];
+  
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "MẪU 01CB", bold: true, size: 24, font: "Times New Roman" })],
+    alignment: AlignmentType.RIGHT, spacing: { after: 150 }
+  }));
+
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "(Dành cho Chi bộ)", bold: true, size: 22, font: "Times New Roman" })],
+    alignment: AlignmentType.RIGHT, spacing: { after: 300 }
+  }));
+
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "BÁO CÁO SỐ LIỆU CÔNG TÁC", bold: true, size: 32, font: "Times New Roman" })],
+    alignment: AlignmentType.CENTER, spacing: { after: 400 }
+  }));
+
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "KIỂM TRA, GIÁM SÁT, THI HÀNH KỶ LUẬT ĐẢNG", bold: true, size: 28, font: "Times New Roman" })],
+    alignment: AlignmentType.CENTER, spacing: { after: 200 }
+  }));
+
+  children.push(new Paragraph({
+    children: [new TextRun({ text: document.getElementById("thoigian").value.toUpperCase(), bold: true, size: 24, font: "Times New Roman" })],
+    alignment: AlignmentType.CENTER, spacing: { after: 100 }
+  }));
+
+  const ghiChuKyBaoCao = document.getElementById("period-note").textContent;
+  if (ghiChuKyBaoCao) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: ghiChuKyBaoCao, italics: true, size: 22, font: "Times New Roman" })],
+      alignment: AlignmentType.CENTER, spacing: { after: 600 }
+    }));
+  }
+
+  // I. KIỂM TRA
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "I. KIỂM TRA", bold: true, size: 26 })],
+    alignment: AlignmentType.CENTER, spacing: { before: 400, after: 200 }
+  }));
+  children.push(createKiemTraTable());
+
+  // II. GIÁM SÁT CHUYÊN ĐỀ
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "II. GIÁM SÁT CHUYÊN ĐỀ", bold: true, size: 26 })],
+    alignment: AlignmentType.CENTER, spacing: { before: 400, after: 200 }
+  }));
+  children.push(createGiamSatTable());
+
+  // III. GIÁM SÁT THƯỜNG XUYÊN
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "III. GIÁM SÁT THƯỜNG XUYÊN", bold: true, size: 26 })],
+    alignment: AlignmentType.CENTER, spacing: { before: 400, after: 200 }
+  }));
+  children.push(createGiamSatThuongXuyenTable());
+
+  // IV. GIẢI QUYẾT ĐƠN
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "IV. GIẢI QUYẾT ĐƠN", bold: true, size: 26 })],
+    alignment: AlignmentType.CENTER, spacing: { before: 400, after: 200 }
+  }));
+  children.push(createGiaiQuyetTable());
+
+  // V. THI HÀNH KỶ LUẬT
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "V. THI HÀNH KỶ LUẬT ĐẢNG", bold: true, size: 26 })],
+    alignment: AlignmentType.CENTER, spacing: { before: 400, after: 200 }
+  }));
+  children.push(createThiHanhTable());
+
+  // Phần kết
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "Nơi nhận:", bold: true, italics: true })],
+    spacing: { before: 400 }
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "- Ủy ban Kiểm tra Đảng ủy phường;", italics: true })],
+    indent: { left: 720 }
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "- Lưu chi bộ.", italics: true })],
+    indent: { left: 720 }
+  }));
+
+  const chiBoName = document.getElementById("chibo").value || ".........................";
+  const now = new Date();
+
+  children.push(new Paragraph({
+    children: [new TextRun({ text: `Ngày ${now.getDate()} tháng ${now.getMonth() + 1} năm ${now.getFullYear()}`, italics: true })],
+    alignment: AlignmentType.RIGHT, spacing: { before: 200 }
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: `T/M CHI BỘ ${chiBoName.toUpperCase()}`, bold: true })],
+    alignment: AlignmentType.RIGHT, spacing: { before: 100 }
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "BÍ THƯ", bold: true })],
+    alignment: AlignmentType.RIGHT, spacing: { after: 800 }
+  }));
+
+  const doc = new Document({ sections: [{ properties: {}, children: children }] });
+  return new Promise((resolve) => { Packer.toBlob(doc).then(resolve); });
+}
+
+function createKiemTraTable() {
+  const { Table, TableRow, TableCell, Paragraph, WidthType } = docx;
+  const tableRows = [new TableRow({ children: [
+    new TableCell({ children: [new Paragraph("STT")], width: { size: 450, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Họ và tên đảng viên được kiểm tra")], width: { size: 1800, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Chức vụ")], width: { size: 1350, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Nội dung kiểm tra")], width: { size: 3150, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Kết quả thực hiện")], width: { size: 2250, type: WidthType.DXA } })
+  ] })];
+  
+  const rows = document.getElementById("kiemtra-table").getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  let hasData = false;
+  for (let i = 0; i < rows.length; i++) {
+    const cells = rows[i].getElementsByTagName('td');
+    const inputs = rows[i].getElementsByTagName('input');
+    const textareas = rows[i].getElementsByTagName('textarea');
+    const hoTen = inputs[0]?.value || '';
+    const chucVu = inputs[1]?.value || '';
+    const noiDung = textareas[0]?.value || '';
+    const ketQua = textareas[1]?.value || '';
+    if (hoTen || chucVu || noiDung || ketQua) {
+      hasData = true;
+      tableRows.push(new TableRow({ children: [
+        new TableCell({ children: [new Paragraph(cells[0].textContent)] }),
+        new TableCell({ children: [new Paragraph(hoTen)] }),
+        new TableCell({ children: [new Paragraph(chucVu)] }),
+        new TableCell({ children: [new Paragraph(noiDung)] }),
+        new TableCell({ children: [new Paragraph(ketQua)] })
+      ] }));
+    }
+  }
+  if (!hasData) {
+    tableRows.push(new TableRow({ children: [
+      new TableCell({ children: [new Paragraph("1")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] })
+    ] }));
+  }
+  return new Table({ width: { size: 9000, type: WidthType.DXA }, rows: tableRows });
+}
+
+function createGiamSatTable() {
+  const { Table, TableRow, TableCell, Paragraph, WidthType } = docx;
+  const tableRows = [new TableRow({ children: [
+    new TableCell({ children: [new Paragraph("STT")], width: { size: 450, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Họ và tên đảng viên được giám sát")], width: { size: 1800, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Chức vụ")], width: { size: 1350, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Nội dung giám sát")], width: { size: 3150, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Kết quả thực hiện")], width: { size: 2250, type: WidthType.DXA } })
+  ] })];
+  
+  const rows = document.getElementById("giamsat-table").getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  let hasData = false;
+  for (let i = 0; i < rows.length; i++) {
+    const cells = rows[i].getElementsByTagName('td');
+    const inputs = rows[i].getElementsByTagName('input');
+    const textareas = rows[i].getElementsByTagName('textarea');
+    const hoTen = inputs[0]?.value || '';
+    const chucVu = inputs[1]?.value || '';
+    const noiDung = textareas[0]?.value || '';
+    const ketQua = textareas[1]?.value || '';
+    if (hoTen || chucVu || noiDung || ketQua) {
+      hasData = true;
+      tableRows.push(new TableRow({ children: [
+        new TableCell({ children: [new Paragraph(cells[0].textContent)] }),
+        new TableCell({ children: [new Paragraph(hoTen)] }),
+        new TableCell({ children: [new Paragraph(chucVu)] }),
+        new TableCell({ children: [new Paragraph(noiDung)] }),
+        new TableCell({ children: [new Paragraph(ketQua)] })
+      ] }));
+    }
+  }
+  if (!hasData) {
+    tableRows.push(new TableRow({ children: [
+      new TableCell({ children: [new Paragraph("1")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] })
+    ] }));
+  }
+  return new Table({ width: { size: 9000, type: WidthType.DXA }, rows: tableRows });
+}
+
+function createGiamSatThuongXuyenTable() {
+  const { Table, TableRow, TableCell, Paragraph, WidthType } = docx;
+  const tableRows = [new TableRow({ children: [
+    new TableCell({ children: [new Paragraph("STT")], width: { size: 450, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Họ và tên đảng viên được giám sát")], width: { size: 1800, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Chức vụ")], width: { size: 1350, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Nội dung giám sát")], width: { size: 3150, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Kết quả thực hiện")], width: { size: 2250, type: WidthType.DXA } })
+  ] })];
+  
+  const rows = document.getElementById("giamsatthuongxuyen-table").getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  let hasData = false;
+  for (let i = 0; i < rows.length; i++) {
+    const cells = rows[i].getElementsByTagName('td');
+    const inputs = rows[i].getElementsByTagName('input');
+    const textareas = rows[i].getElementsByTagName('textarea');
+    const hoTen = inputs[0]?.value || '';
+    const chucVu = inputs[1]?.value || '';
+    const noiDung = textareas[0]?.value || '';
+    const ketQua = textareas[1]?.value || '';
+    if (hoTen || chucVu || noiDung || ketQua) {
+      hasData = true;
+      tableRows.push(new TableRow({ children: [
+        new TableCell({ children: [new Paragraph(cells[0].textContent)] }),
+        new TableCell({ children: [new Paragraph(hoTen)] }),
+        new TableCell({ children: [new Paragraph(chucVu)] }),
+        new TableCell({ children: [new Paragraph(noiDung)] }),
+        new TableCell({ children: [new Paragraph(ketQua)] })
+      ] }));
+    }
+  }
+  if (!hasData) {
+    tableRows.push(new TableRow({ children: [
+      new TableCell({ children: [new Paragraph("1")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] })
+    ] }));
+  }
+  return new Table({ width: { size: 9000, type: WidthType.DXA }, rows: tableRows });
+}
+
+function createGiaiQuyetTable() {
+  const { Table, TableRow, TableCell, Paragraph, WidthType } = docx;
+  const tableRows = [new TableRow({ children: [
+    new TableCell({ children: [new Paragraph("STT")], width: { size: 450, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Họ và tên đảng viên")], width: { size: 1800, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Chức vụ")], width: { size: 1350, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Nội dung giải quyết đơn")], width: { size: 3150, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Kết quả giải quyết")], width: { size: 2250, type: WidthType.DXA } })
+  ] })];
+  
+  const rows = document.getElementById("giaiquyetdon-table").getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  let hasData = false;
+  for (let i = 0; i < rows.length; i++) {
+    const cells = rows[i].getElementsByTagName('td');
+    const inputs = rows[i].getElementsByTagName('input');
+    const textareas = rows[i].getElementsByTagName('textarea');
+    const hoTen = inputs[0]?.value || '';
+    const chucVu = inputs[1]?.value || '';
+    const noiDung = textareas[0]?.value || '';
+    const ketQua = textareas[1]?.value || '';
+    if (hoTen || chucVu || noiDung || ketQua) {
+      hasData = true;
+      tableRows.push(new TableRow({ children: [
+        new TableCell({ children: [new Paragraph(cells[0].textContent)] }),
+        new TableCell({ children: [new Paragraph(hoTen)] }),
+        new TableCell({ children: [new Paragraph(chucVu)] }),
+        new TableCell({ children: [new Paragraph(noiDung)] }),
+        new TableCell({ children: [new Paragraph(ketQua)] })
+      ] }));
+    }
+  }
+  if (!hasData) {
+    tableRows.push(new TableRow({ children: [
+      new TableCell({ children: [new Paragraph("1")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] })
+    ] }));
+  }
+  return new Table({ width: { size: 9000, type: WidthType.DXA }, rows: tableRows });
+}
+
+function createThiHanhTable() {
+  const { Table, TableRow, TableCell, Paragraph, WidthType } = docx;
+  const tableRows = [new TableRow({ children: [
+    new TableCell({ children: [new Paragraph("STT")], width: { size: 450, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Họ và tên đảng viên bị kỷ luật")], width: { size: 1800, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Chức vụ")], width: { size: 1350, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Hình thức kỷ luật")], width: { size: 1350, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Nội dung vi phạm")], width: { size: 2700, type: WidthType.DXA } }),
+    new TableCell({ children: [new Paragraph("Số Quyết định")], width: { size: 1350, type: WidthType.DXA } })
+  ] })];
+  
+  const rows = document.getElementById("thihanh-table").getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  let hasData = false;
+  for (let i = 0; i < rows.length; i++) {
+    const cells = rows[i].getElementsByTagName('td');
+    const inputs = rows[i].getElementsByTagName('input');
+    const textareas = rows[i].getElementsByTagName('textarea');
+    const hoTen = inputs[0]?.value || '';
+    const chucVu = inputs[1]?.value || '';
+    const hinhThuc = inputs[2]?.value || '';
+    const noiDung = textareas[0]?.value || '';
+    const soQuyetDinh = inputs[3]?.value || '';
+    if (hoTen || chucVu || hinhThuc || noiDung || soQuyetDinh) {
+      hasData = true;
+      tableRows.push(new TableRow({ children: [
+        new TableCell({ children: [new Paragraph(cells[0].textContent)] }),
+        new TableCell({ children: [new Paragraph(hoTen)] }),
+        new TableCell({ children: [new Paragraph(chucVu)] }),
+        new TableCell({ children: [new Paragraph(hinhThuc)] }),
+        new TableCell({ children: [new Paragraph(noiDung)] }),
+        new TableCell({ children: [new Paragraph(soQuyetDinh)] })
+      ] }));
+    }
+  }
+  if (!hasData) {
+    tableRows.push(new TableRow({ children: [
+      new TableCell({ children: [new Paragraph("1")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] }),
+      new TableCell({ children: [new Paragraph("")] })
+    ] }));
+  }
+  return new Table({ width: { size: 9000, type: WidthType.DXA }, rows: tableRows });
+}
+
+function exportUnencrypted() {
+  const chiBo = document.getElementById("chibo").value;
+  const thoiGian = document.getElementById("thoigian").value;
+  if (!chiBo) {
+    alert("Vui lòng chọn chi bộ!");
+    chiBoOpenModal();
+    return;
+  }
+  const filename = `BCKT01_${chiBo.replace(/\s+/g, '_')}_${thoiGian.replace(/\s+/g, '_')}.docx`;
+  createWordDocument(filename).then(blob => {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+}
+
+// ===== TÌM KIẾM CHI BỘ (modal toàn màn hình) =====
+let _chiBoSelected = "";
+let _dropdownIndex = -1;
+let _openGroupId = null;
+
+// Mở modal: dựng khung 1 lần (header + ô tìm kiếm cố định + phần thân),
+// KHÔNG auto-focus ô tìm kiếm => bàn phím không tự bật, không che danh sách.
+function chiBoOpenModal() {
+  const dropdown = document.getElementById("chibo-dropdown");
+  dropdown.innerHTML = `
+    <div class="chibo-modal-box" onclick="event.stopPropagation()">
+      <div class="chibo-modal-header">
+        <h3>Chọn chi bộ</h3>
+        <button type="button" class="chibo-modal-close" onclick="chiBoCloseModal()">✕</button>
+      </div>
+      <div class="chibo-modal-search-wrap">
+        <input type="text" id="chibo-modal-search" class="chibo-modal-search" autocomplete="off"
+               placeholder="🔍 Nhập tên hoặc số để tìm nhanh..."
+               oninput="chiBoRenderBody(this.value)"
+               onkeydown="chiBoModalSearchKeyDown(event)">
+      </div>
+      <div class="chibo-modal-body" id="chibo-modal-body"></div>
+    </div>`;
+  dropdown.classList.add("open");
+  chiBoRenderBody("");
+  chiBoAdjustHeight();
+}
+
+// Chỉ cập nhật phần THÂN modal, giữ nguyên ô tìm kiếm (không bị mất focus khi đang gõ)
+function chiBoRenderBody(query) {
+  const body = document.getElementById("chibo-modal-body");
+  if (!body) return;
+  if (!query || !query.trim()) {
+    body.innerHTML = chiBoGroupsHtml();
+    return;
+  }
+  const q = removeAccents(query.trim().toUpperCase());
+  _dropdownIndex = -1;
+  let items = "";
+  let optIdx = 0;
+  let total = 0;
+  DS_NHOM.forEach(nhom => {
+    const matches = nhom.danhSach.filter(cb => removeAccents(cb.toUpperCase()).includes(q));
+    if (!matches.length) return;
+    items += `<div class="chibo-group-header" style="pointer-events:none">${nhom.ten}</div>`;
+    matches.forEach(cb => {
+      items += `<div class="chibo-option" data-val="${cb}" data-idx="${optIdx}"
+        onmousedown="chiBoSelect('${cb.replace(/'/g,"\'")}', event)"
+        onmouseover="chiBoHover(${optIdx})">${highlight(cb, query)}</div>`;
+      optIdx++; total++;
+    });
+  });
+  body.innerHTML = total ? items : '<div class="chibo-no-result">Không tìm thấy tổ chức nào</div>';
+}
+
+function chiBoGroupsHtml() {
+  let html = "";
+  DS_NHOM.forEach(nhom => {
+    const isOpen = _openGroupId === nhom.id;
+    html += `<div class="chibo-group-header${isOpen ? " open" : ""}" onclick="chiBoToggleGroup('${nhom.id}', event)">
+      <span>${nhom.ten}<span class="chibo-group-count">${nhom.danhSach.length}</span></span>
+      <span class="nhom-arrow">▶</span>
+    </div>
+    <div class="chibo-group-items${isOpen ? " open" : ""}" id="items-${nhom.id}">
+      <div class="chibo-group-search-wrap">
+        <input class="chibo-group-search" type="text" placeholder="🔍 Tìm trong nhóm này..."
+          oninput="chiBoFilterGroup('${nhom.id}', this.value)" onkeydown="chiBoGroupSearchKey(event, '${nhom.id}')">
+      </div>
+      ${nhom.danhSach.map((cb, i) => `<div class="chibo-option" data-val="${cb}" data-group="${nhom.id}"
+        onmousedown="chiBoSelect('${cb.replace(/'/g,"\'")}', event)"
+        onmouseover="this.classList.add('active')" onmouseout="this.classList.remove('active')">${cb}</div>`).join("")}
+    </div>`;
+  });
+  return html;
+}
+
+function chiBoToggleGroup(groupId, e) {
+  if (e) e.stopPropagation();
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  _openGroupId = (_openGroupId === groupId) ? null : groupId;
+  chiBoRenderBody("");
+}
+
+function chiBoFilterGroup(groupId, query) {
+  const container = document.getElementById("items-" + groupId);
+  if (!container) return;
+  const q = removeAccents(query.trim().toUpperCase());
+  container.querySelectorAll(".chibo-option").forEach(el => {
+    const match = !q || removeAccents(el.dataset.val.toUpperCase()).includes(q);
+    el.style.display = match ? "" : "none";
+  });
+  setTimeout(() => {
+    const inp = container.querySelector(".chibo-group-search");
+    if (inp) inp.scrollIntoView({ block: "center" });
+  }, 50);
+}
+
+function chiBoGroupSearchKey(e, groupId) {
+  if (e.key === "Escape") {
+    e.target.blur();
+    if (document.getElementById("items-" + groupId)) chiBoAdjustHeight();
+  }
+  if (e.key === "Enter") {
+    const container = document.getElementById("items-" + groupId);
+    const visible = container ? [...container.querySelectorAll(".chibo-option")].filter(el => el.style.display !== "none") : [];
+    if (visible.length === 1) chiBoSelect(visible[0].dataset.val, null);
+  }
+}
+
+function chiBoModalSearchKeyDown(e) {
+  const options = document.querySelectorAll("#chibo-modal-body .chibo-option");
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    _dropdownIndex = Math.min(_dropdownIndex + 1, options.length - 1);
+    options.forEach((el, i) => el.classList.toggle("active", i === _dropdownIndex));
+    if (options[_dropdownIndex]) options[_dropdownIndex].scrollIntoView({ block: "nearest" });
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    _dropdownIndex = Math.max(_dropdownIndex - 1, 0);
+    options.forEach((el, i) => el.classList.toggle("active", i === _dropdownIndex));
+    if (options[_dropdownIndex]) options[_dropdownIndex].scrollIntoView({ block: "nearest" });
+  } else if (e.key === "Enter" && _dropdownIndex >= 0 && options[_dropdownIndex]) {
+    e.preventDefault();
+    chiBoSelect(options[_dropdownIndex].dataset.val, null);
+  } else if (e.key === "Escape") {
+    chiBoCloseModal();
+  }
+}
+
+function chiBoSelect(val, e) {
+  if (e) e.preventDefault();
+  document.getElementById("chibo-search").value = val;
+  document.getElementById("chibo").value = val;
+  document.getElementById("chibo-clear").style.display = "block";
+  chiBoCloseModal();
+  _chiBoSelected = val;
+}
+
+function chiBoClear() {
+  document.getElementById("chibo-search").value = "";
+  document.getElementById("chibo").value = "";
+  document.getElementById("chibo-clear").style.display = "none";
+  chiBoCloseModal();
+  _chiBoSelected = "";
+}
+
+function chiBoCloseModal() {
+  const dropdown = document.getElementById("chibo-dropdown");
+  if (document.activeElement && dropdown.contains(document.activeElement) && document.activeElement.blur) {
+    document.activeElement.blur();
+  }
+  dropdown.classList.remove("open");
+  _openGroupId = null;
+}
+
+function chiBoBackdropClick(e) {
+  if (e.target.id === "chibo-dropdown") chiBoCloseModal();
+}
+
+function chiBoHover(idx) {
+  _dropdownIndex = idx;
+  document.querySelectorAll("#chibo-modal-body .chibo-option").forEach((el, i) => el.classList.toggle("active", i === idx));
+}
+
+function chiBoKeyDown(e) {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    chiBoOpenModal();
+  }
+}
+
+function chiBoAdjustHeight() {
+  const vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight);
+  document.documentElement.style.setProperty("--chibo-max-h", Math.round(vh * 0.9) + "px");
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", chiBoAdjustHeight);
+} else {
+  window.addEventListener("resize", chiBoAdjustHeight);
+}
+
+document.addEventListener("click", function(e) {
+  const dropdown = document.getElementById("chibo-dropdown");
+  if (!dropdown.classList.contains("open")) return;
+  if (!document.getElementById("chibo-wrapper").contains(e.target))
+    chiBoCloseModal();
+});
+
+function removeAccents(str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+}
+
+function highlight(text, query) {
+  const q = query.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`(${q})`, "gi");
+  return text.replace(re, "<mark>$1</mark>");
+}
+
+// ===== MODAL GỬI BÁO CÁO =====
+function openSendModal() {
+  const chiBo = document.getElementById("chibo").value;
+  if (!chiBo) {
+    alert("Vui lòng chọn chi bộ trước khi gửi!");
+    chiBoOpenModal();
+    return;
+  }
+  const thoiGian = document.getElementById("thoigian").value;
+  document.getElementById("modal-chibo-info").textContent = `Chi bộ: ${chiBo}  |  ${thoiGian}`;
+  document.getElementById("modal-status").textContent = "";
+  document.getElementById("modal-status").className = "modal-status";
+  document.getElementById("modal-actions").innerHTML = `
+    <button class="modal-btn modal-btn-confirm" onclick="doSendReport()">✅ Xác nhận gửi</button>
+    <button class="modal-btn modal-btn-cancel" onclick="closeSendModal()">Hủy</button>`;
+  document.getElementById("modal-actions").style.display = "flex";
+  document.getElementById("send-modal").classList.add("open");
+}
+
+function closeSendModal() {
+  document.getElementById("send-modal").classList.remove("open");
+}
+
+async function doSendReport() {
+  const chiBo = document.getElementById("chibo").value;
+  const thoiGian = document.getElementById("thoigian").value;
+  const now = new Date();
+  
+  const stats = calculateStatistics();
+
+  const statusEl = document.getElementById("modal-status");
+  const actionsEl = document.getElementById("modal-actions");
+
+  statusEl.innerHTML = '<span class="spinner"></span> Đang tạo file...';
+  statusEl.className = "modal-status wait";
+  actionsEl.style.display = "none";
+
+  try {
+    const filename = `BCKT01_${chiBo.replace(/\s+/g, "_")}_${thoiGian.replace(/\s+/g, "_")}.docx`;
+    const blob = await createWordDocument(filename);
+
+    statusEl.innerHTML = '<span class="spinner"></span> Đang gửi lên Drive...';
+
+    const base64 = await blobToBase64(blob);
+    const payload = {
+      loaiMau: "Mau01",
+      chibo: chiBo,
+      thoigian: thoiGian,
+      loaiBaoCao: thoiGian,
+      nam: now.getFullYear(),
+      fileName: filename,
+      fileBase64: base64,
+      thongKe: stats
+    };
+
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      statusEl.innerHTML = `${data.message}<br><a href="${data.fileUrl}" target="_blank" style="color:var(--secondary);">📄 Xem file trên Drive</a>`;
+      statusEl.className = "modal-status ok";
+      actionsEl.innerHTML = `<button class="modal-btn modal-btn-confirm" onclick="window.location.href='index.html'">🏠 Về trang chủ</button>`;
+      actionsEl.style.display = "flex";
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (err) {
+    statusEl.textContent = "❌ Lỗi: " + err.message;
+    statusEl.className = "modal-status err";
+    actionsEl.style.display = "flex";
+  }
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+</script>
+<footer class="site-footer">
+  ỦY BAN KIỂM TRA ĐẢNG ỦY THANH KHÊ
+</footer>
+</body>
+</html>
