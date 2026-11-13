@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tạo Báo cáo Kiểm tra, Giám sát, Thi hành kỷ luật Đảng (Mẫu 02)</title>
+<script src="https://unpkg.com/docx@8.0.0/build/index.js"></script>
+<script src="config.js"></script>
+<script src="chibo.js"></script>
+<style>
+  :root {
+    --primary: #1a365d;
+    --secondary: #2b6cb0;
+    --accent: #38a169;
+    --light: #f8fafc;
+    --dark: #2d3748;
+    --gray: #cbd5e0;
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: "Times New Roman", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6; color: var(--dark); background: var(--light);
+    padding: 20px; max-width: 1100px; margin: 0 auto;
+  }
+  
+  header { 
+    text-align: center; 
+    margin-bottom: 30px; 
+    padding-bottom: 20px; 
+    border-bottom: 1px solid var(--gray); 
+  }
+  
+  h1 { 
+    color: #ff1212; 
+    margin-bottom: 10px; 
+    font-size: 28px; 
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 
+        1px 1px 0 #ffffff,       
+        1px 1px 2px rgba(0,0,0,0.9);
+    border-top: 2px solid #f7e00f;
+  }
+  
+  .small-sub {
+    font-size: 20px;
+    font-weight: normal;
+    display: block;
+    margin-top: 5px;
+  }
+
+  .subtitle { 
+    color: var(--secondary); 
+    font-size: 16px; 
+    margin-bottom: 20px; 
+    text-align: center;
+    border-bottom: 2px solid #f7e00f;
+    padding: 8px 0;
+  }
+  
+  .info-section { 
+    background: white; 
+    padding: 20px; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); 
+    margin-bottom: 20px; 
+  }
+  
+  .info-row { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px; }
+  
+  .info-item { flex: 1; min-width: 200px; }
+  
+  label { 
+    display: block; 
+    font-weight: bold; 
+    margin-bottom: 5px; 
+    color: var(--primary); 
+  }
+  
+  input[type="text"], select { 
+    width: 100%; 
+    padding: 10px; 
+    border: 1px solid var(--gray); 
+    border-radius: 4px; 
+    font-size: 15px; 
+    font-family: "Times New Roman", serif;
+  }
+
+  /* ===== CHI BỘ SEARCH (full-screen picker) ===== */
+  .chibo-wrapper { position: relative; }
+  .chibo-wrapper input { padding-right: 34px; cursor: pointer; }
+  .chibo-clear {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    cursor: pointer; color: #999; font-size: 16px; line-height: 1;
+    display: none;
+  }
+  /* backdrop, full screen */
+  .chibo-dropdown {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 9998;
+    align-items: flex-start; justify-content: center;
+    padding-top: 4vh; box-sizing: border-box;
+  }
+  .chibo-dropdown.open { display: flex; }
+  /* centered panel */
+  .chibo-modal-box {
+    background: white; border-radius: 12px;
+    width: 92%; max-width: 640px;
+    max-height: var(--chibo-max-h, 88vh);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    font-family: "Times New Roman", serif;
+  }
+  .chibo-modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 18px; background: var(--primary, #1a365d); color: #fff;
+    flex: none;
+  }
+  .chibo-modal-header h3 { font-size: 17px; margin: 0; }
+  .chibo-modal-close {
+    background: none; border: none; font-size: 22px; cursor: pointer;
+    color: #fff; opacity: 0.85; padding: 0 6px; line-height: 1;
+    transition: opacity 0.2s;
+  }
+  .chibo-modal-close:hover { opacity: 1; color: #ffb4b4; }
+  /* ô tìm kiếm cố định ngay dưới tiêu đề, luôn nhìn thấy được kể cả khi bàn phím mở */
+  .chibo-modal-search-wrap {
+    padding: 10px 14px; background: #edf2f7;
+    border-bottom: 1px solid #cbd5e0; flex: none;
+  }
+  .chibo-modal-search {
+    width: 100%; padding: 9px 12px;
+    border: 1px solid #90cdf4; border-radius: 6px;
+    font-size: 15px; font-family: "Times New Roman", serif;
+    outline: none; background: #fff; box-sizing: border-box;
+  }
+  .chibo-modal-search:focus { border-color: #2b6cb0; }
+  .chibo-modal-body { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+  .chibo-option {
+    padding: 11px 16px; cursor: pointer; font-size: 15px;
+    font-family: "Times New Roman", serif; border-bottom: 1px solid #f0f0f0;
+    transition: background 0.15s;
+  }
+  .chibo-option:hover, .chibo-option.active { background: #e8f0fe; }
+  .chibo-option mark { background: #fff176; color: inherit; font-weight: bold; padding: 0; }
+  .chibo-no-result { padding: 16px; color: #999; font-style: italic; font-size: 14px; text-align: center; }
+  
+  .chibo-group-header {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    background: #1a365d;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+    border-bottom: 1px solid #2b6cb0;
+  }
+  .chibo-group-header:hover { background: #2b6cb0; }
+  .chibo-group-header .nhom-arrow {
+    font-size: 11px; transition: transform 0.2s;
+  }
+  .chibo-group-header.open .nhom-arrow { transform: rotate(90deg); }
+  .chibo-group-items { display: none; }
+  .chibo-group-items.open { display: block; }
+  .chibo-group-search-wrap {
+    padding: 8px 12px;
+    background: #edf2f7;
+    border-bottom: 1px solid #cbd5e0;
+    position: sticky; top: 0; z-index: 1;
+  }
+  .chibo-group-search {
+    width: 100%; padding: 7px 10px;
+    border: 1px solid #90cdf4; border-radius: 4px;
+    font-size: 14px; font-family: "Times New Roman", serif;
+    outline: none; background: #fff; box-sizing: border-box;
+  }
+  .chibo-group-search:focus { border-color: #2b6cb0; }
+  .chibo-group-count {
+    font-size: 11px; font-weight: normal;
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px; padding: 1px 7px; margin-left: 6px;
+  }
+  @media (max-width: 520px) {
+    .chibo-dropdown { padding-top: 0; }
+    .chibo-modal-box { width: 100%; height: 100%; max-height: 100%; border-radius: 0; }
+  }
+
+  /* ===== MODAL GỬI BÁO CÁO ===== */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 9999;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: white; border-radius: 12px; padding: 28px 32px;
+    max-width: 440px; width: 92%; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    text-align: center; font-family: "Times New Roman", serif;
+  }
+  .modal-box h3 { color: var(--primary); margin-bottom: 12px; font-size: 18px; }
+  .modal-box p  { color: #555; font-size: 15px; margin-bottom: 18px; line-height: 1.6; }
+  .modal-status { font-size: 15px; margin-top: 10px; min-height: 24px; font-weight: bold; }
+  .modal-status.ok   { color: #38a169; }
+  .modal-status.err  { color: #e53e3e; }
+  .modal-status.wait { color: #2b6cb0; }
+  .modal-actions { display: flex; gap: 12px; justify-content: center; margin-top: 18px; }
+  .modal-btn {
+    padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer;
+    font-size: 15px; font-weight: bold; font-family: "Times New Roman", serif;
+    transition: opacity 0.2s;
+  }
+  .modal-btn:hover { opacity: 0.85; }
+  .modal-btn-confirm { background: #38a169; color: white; }
+  .modal-btn-cancel  { background: #e2e8f0; color: #444; }
+  .btn-send { background: #d97706; }
+  .spinner {
+    display: inline-block; width: 18px; height: 18px;
+    border: 3px solid #ccc; border-top-color: var(--secondary);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    vertical-align: middle; margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  
+  textarea {
+    width: 100%; 
+    min-height: 120px; 
+    padding: 10px; 
+    margin-top: 10px; 
+    border: 1px solid var(--gray);
+    border-radius: 4px; 
+    resize: vertical; 
+    font-family: "Times New Roman", serif;
+    font-size: 15px;
+  }
+
+  .section-title {
+    margin: 25px 0 5px; 
+    color: var(--primary); 
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--gray); 
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .section-subtitle {
+    margin: 20px 0 5px; 
+    color: var(--secondary); 
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .section-description {
+    font-size: 15px; 
+    color: #666; 
+    margin-bottom: 10px; 
+    font-style: italic;
+  }
+
+  .btn-bar { 
+    margin-top: 30px; 
+    text-align: center; 
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .btn {
+    padding: 12px 24px; 
+    background: var(--accent); 
+    color: white; 
+    border: none;
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    font-weight: bold; 
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    font-family: "Times New Roman", serif;
+  }
+  
+  .btn:hover { 
+    opacity: 0.9; 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .btn-unencrypted { 
+    background: var(--secondary); 
+  }
+  
+  .btn-encrypted {
+    background: #9c4221;
+  }
+  
+  .guide-section {
+    margin-bottom: 20px;
+  }
+
+  .accordion-guide {
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    padding: 15px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s;
+    font-family: "Times New Roman", serif;
+  }
+
+  .accordion-guide:hover {
+    background: #2f855a;
+  }
+
+  .accordion-guide::after {
+    content: '\002B';
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .accordion-guide.active::after {
+    content: '\2212';
+  }
+
+  .guide-content {
+    background: white;
+    padding: 0 20px;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-left: 1px solid var(--accent);
+    border-right: 1px solid var(--gray);
+    border-bottom: 1px solid var(--gray);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out, padding 0.2s ease-out;
+  }
+
+  .guide-content.active {
+    padding: 20px;
+    max-height: 1000px;
+  }
+
+  .guide-content ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+  }
+
+  .deadline-info {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 6px;
+    padding: 15px;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .deadline-info h4 {
+    color: #856404;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  @media (max-width: 768px) {
+    .info-row {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+     .btn-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .btn {
+    margin: 0;
+  }
+}
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .btn:disabled:hover {
+    opacity: 0.6;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .top-notice {
+    background-color: #eb1717;
+    color: #ebe717;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 12px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    text-shadow: 1px 1px 0 #000, 0.2px 0.1px 0 #555;
+    font-weight: bold;
+  }
+
+  .site-footer {
+    background-color: #eb1717;
+    color: #ebe717;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 13px;
+    margin-top: 30px;
+    border-radius: 4px;
+    text-shadow: 1px 1px 0 #000, 0.2px 0.1px 0 #555;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+<div class="top-notice">
+  ỨNG DỤNG LƯU HÀNH NỘI BỘ
+</div>
+<header>
+  <h1>
+    BÁO CÁO CÔNG TÁC<br>
+    <span class="small-sub">(KIỂM TRA, GIÁM SÁT,<br> THI HÀNH KỶ LUẬT ĐẢNG)</span>
+  </h1>
+  <p class="subtitle">MẪU 02CB - (Dành cho Chi bộ)</p>
+  <div class="guide-section">
+    <button class="accordion accordion-guide">📋 HƯỚNG DẪN TẠO BÁO CÁO</button>
+    <div class="guide-content">
+      <ul>
+        <b>Cách tạo báo cáo:</b>  
+        <li>🔍 Chọn nhóm, nhập số hoặc tên để tìm chi bộ...(thời gian tự động điền, có thể chỉnh sửa nếu muốn)</li>   
+        <li>Nhập thông tin vào các bảng tương ứng với từng phần của báo cáo.</li>
+        <li>Chọn <b>📄<u>Tải Word để lưu</u></b> để tải báo cáo dưới dạng tệp DOCX.</li>
+        <li>Chọn <b>📤<u>Gửi báo cáo</u></b> để gửi báo cáo cho UBKT phường.</li>
+      </ul>
+      <div class="deadline-info">
+        <h4>⏰ THỜI HẠN BÁO CÁO</h4>
+        <p><strong>Báo cáo 6 tháng:</strong> Trước ngày 25 tháng 6 và 25 tháng 12</p>
+        <p><strong>Báo cáo năm:</strong> Trước ngày 25 tháng 12</p>
+        <p><strong>Báo cáo nhiệm kỳ:</strong> Theo quy định của cấp ủy</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="info-section">
+  <div class="info-row">
+    <div class="info-item">
+      <label for="chibo-search">Chi bộ:</label>
+      <div class="chibo-wrapper" id="chibo-wrapper">
+        <input type="text" id="chibo-search" autocomplete="off" readonly
+               placeholder="🔍 Chạm để chọn chi bộ..."
+               onclick="chiBoOpenModal()"
+               onkeydown="chiBoKeyDown(event)">
+        <span class="chibo-clear" id="chibo-clear" onclick="chiBoClear()">✕</span>
+        <div class="chibo-dropdown" id="chibo-dropdown" onclick="chiBoBackdropClick(event)"></div>
+        <input type="hidden" id="chibo" value="">
+      </div>
+    </div>
+    <div class="info-item">
+      <label for="loaibaocao">Loại báo cáo:</label>
+      <select id="loaibaocao" onchange="updateThoiGian()">
+        <option value="">-- Chọn loại báo cáo --</option>
+        <option value="6thang">6 tháng</option>
+        <option value="nam">Năm</option>
+        <option value="nhiemky">Nhiệm kỳ</option>
+      </select>
+    </div>
+    <div class="info-item">
+      <label for="thoigian">Thời gian báo cáo:</label>
+      <input type="text" id="thoigian" placeholder="Thời gian sẽ tự động điền">
+    </div>
+  </div>
+</div>
+
+<h2 class="section-title">A. TÌNH HÌNH, KẾT QUẢ CÔNG TÁC KIỂM TRA, GIÁM SÁT VÀ THI HÀNH KỶ LUẬT ĐẢNG</h2>
+
+<h3 class="section-subtitle">I. KHÁI QUÁT CHUNG</h3>
+<div class="info-section">
+  <label for="khaiquat">Khái quát về tình hình tổ chức đảng, cấp ủy, đảng viên; tình hình UBKT:</label>
+  <textarea id="khaiquat" placeholder="Nhập nội dung khái quát chung..."></textarea>
+</div>
+
+<h3 class="section-subtitle">II. KẾT QUẢ CÔNG TÁC KIỂM TRA, GIÁM SÁT, THI HÀNH KỶ LUẬT ĐẢNG</h3>
+
+<h4 class="section-subtitle">1. Công tác lãnh đạo, chỉ đạo, hướng dẫn về kiểm tra, giám sát</h4>
+<div class="info-section">
+  <textarea id="lanhdao" placeholder="Nhập nội dung về công tác lãnh đạo, chỉ đạo, hướng dẫn..."></textarea>
+</div>
+
+<h4 class="section-subtitle">2. Thực hiện nhiệm vụ kiểm tra, giám sát theo quy định của Điều lệ Đảng</h4>
+
+<h4 class="section-subtitle">2.1. Kiểm tra tổ chức đảng, đảng viên</h4>
+<div class="info-section">
+  <textarea id="kiemtra" placeholder="Nhập nội dung về kiểm tra tổ chức đảng, đảng viên..."></textarea>
+</div>
+
+<h4 class="section-subtitle">2.2. Giám sát tổ chức đảng, đảng viên</h4>
+
+<h4 class="section-subtitle">a) Giám sát thường xuyên và nắm tình hình địa bàn</h4>
+<div class="info-section">
+  <textarea id="giamsatthuongxuyen" placeholder="Nhập nội dung về giám sát thường xuyên và nắm tình hình địa bàn..."></textarea>
+</div>
+
+<h4 class="section-subtitle">b) Giám sát chuyên đề</h4>
+<div class="info-section">
+  <textarea id="giamsatchuyende" placeholder="Nhập nội dung về giám sát chuyên đề..."></textarea>
+</div>
+
+<h4 class="section-subtitle">2.3. Thi hành kỷ luật tổ chức đảng, đảng viên</h4>
+<div class="info-section">
+  <textarea id="thihanhkyluat" placeholder="Nhập nội dung về thi hành kỷ luật tổ chức đảng, đảng viên..."></textarea>
+</div>
+
+<h4 class="section-subtitle">2.4. Tiếp nhận, xử lý đơn thư, giải quyết tố cáo</h4>
+<div class="info-section">
+  <textarea id="donthu" placeholder="Nhập nội dung về tiếp nhận, xử lý đơn thư, giải quyết tố cáo..."></textarea>
+</div>
+
+<h4 class="section-subtitle">3. Công tác khác</h4>
+<div class="info-section">
+  <textarea id="congtackhac" placeholder="Nhập nội dung về công tác khác..."></textarea>
+</div>
+
+<h4 class="section-subtitle">4. Đánh giá chung</h4>
+
+<h4 class="section-subtitle">4.1. Ưu điểm</h4>
+<div class="info-section">
+  <textarea id="uudiem" placeholder="Nhập nội dung về ưu điểm..."></textarea>
+</div>
+
+<h4 class="section-subtitle">4.2. Hạn chế và nguyên nhân</h4>
+<div class="info-section">
+  <textarea id="hanche" placeholder="Nhập nội dung về hạn chế và nguyên nhân..."></textarea>
+</div>
+
+<h4 class="section-subtitle">5. Kiến nghị, đề xuất</h4>
+<div class="info-section">
+  <textarea id="kiennghi" placeholder="Nhập nội dung về kiến nghị, đề xuất..."></textarea>
+</div>
+
+<h2 class="section-title">B. PHƯƠNG HƯỚNG, NHIỆM VỤ CÔNG TÁC TRỌNG TÂM</h2>
+
+<h3 class="section-subtitle">I. PHƯƠNG HƯỚNG</h3>
+<div class="info-section">
+  <textarea id="phuonghuong" placeholder="Nhập nội dung về phương hướng..."></textarea>
+</div>
+
+<h3 class="section-subtitle">II. NHIỆM VỤ CÔNG TÁC TRỌNG TÂM</h3>
+<div class="info-section">
+  <textarea id="nhiemvu" placeholder="Nhập nội dung về nhiệm vụ công tác trọng tâm..."></textarea>
+</div>
+
+<div class="btn-bar">
+  <button class="btn btn-unencrypted" onclick="exportUnencrypted()">
+    📄 Tải Word để lưu
+  </button>
+  <button class="btn btn-send" onclick="openSendModal()">
+    📤 Gửi báo cáo
+  </button>
+  <button class="btn" style="background:#6b7280" onclick="window.location.href='index.html'">
+    🏠 Về trang chủ
+  </button>
+</div>
+
+<!-- MODAL GỬI BÁO CÁO -->
+<div class="modal-overlay" id="send-modal">
+  <div class="modal-box">
+    <h3>📤 Gửi báo cáo lên Drive</h3>
+    <p>Báo cáo sẽ được tải lên Google Drive và ghi vào bảng thống kê chi bộ đã nộp.</p>
+    <p id="modal-chibo-info" style="font-weight:bold; color:var(--primary);"></p>
+    <div class="modal-status" id="modal-status"></div>
+    <div class="modal-actions" id="modal-actions">
+      <button class="modal-btn modal-btn-confirm" onclick="doSendReport()">✅ Xác nhận gửi</button>
+      <button class="modal-btn modal-btn-cancel" onclick="closeSendModal()">Hủy</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Cập nhật thời gian báo cáo dựa trên loại báo cáo
+function updateThoiGian() {
+  const loaiBaoCao = document.getElementById("loaibaocao").value;
+  const now = new Date();
+  const year = now.getFullYear();
+  
+  let thoiGian = "";
+  
+  switch(loaiBaoCao) {
+    case "6thang":
+      const month = now.getMonth() + 1;
+      const ky = month <= 6 ? "6 tháng đầu năm" : "6 tháng cuối năm";
+      thoiGian = `${ky} ${year}`;
+      break;
+    case "nam":
+      thoiGian = `Năm ${year}`;
+      break;
+    case "nhiemky":
+      thoiGian = "Nhiệm kỳ";
+      break;
+    default:
+      thoiGian = "";
+  }
+  
+  document.getElementById("thoigian").value = thoiGian;
+}
+
+// Accordion hướng dẫn
+document.addEventListener("DOMContentLoaded", function() {
+  const btn = document.querySelector(".accordion-guide");
+  const content = document.querySelector(".guide-content");
+  if (btn && content) {
+    btn.addEventListener("click", function() {
+      this.classList.toggle("active");
+      content.classList.toggle("active");
+    });
+  }
+});
+
+// ===== TÌM KIẾM CHI BỘ (modal toàn màn hình) =====
+let _chiBoSelected = "";
+let _dropdownIndex = -1;
+let _openGroupId = null;
+
+// Mở modal: dựng khung 1 lần (header + ô tìm kiếm cố định + phần thân),
+// KHÔNG auto-focus ô tìm kiếm => bàn phím không tự bật, không che danh sách.
+function chiBoOpenModal() {
+  const dropdown = document.getElementById("chibo-dropdown");
+  dropdown.innerHTML = `
+    <div class="chibo-modal-box" onclick="event.stopPropagation()">
+      <div class="chibo-modal-header">
+        <h3>Chọn chi bộ</h3>
+        <button type="button" class="chibo-modal-close" onclick="chiBoCloseModal()">✕</button>
+      </div>
+      <div class="chibo-modal-search-wrap">
+        <input type="text" id="chibo-modal-search" class="chibo-modal-search" autocomplete="off"
+               placeholder="🔍 Nhập tên hoặc số để tìm nhanh..."
+               oninput="chiBoRenderBody(this.value)"
+               onkeydown="chiBoModalSearchKeyDown(event)">
+      </div>
+      <div class="chibo-modal-body" id="chibo-modal-body"></div>
+    </div>`;
+  dropdown.classList.add("open");
+  chiBoRenderBody("");
+  chiBoAdjustHeight();
+}
+
+// Chỉ cập nhật phần THÂN modal, giữ nguyên ô tìm kiếm (không bị mất focus khi đang gõ)
+function chiBoRenderBody(query) {
+  const body = document.getElementById("chibo-modal-body");
+  if (!body) return;
+  if (!query || !query.trim()) {
+    body.innerHTML = chiBoGroupsHtml();
+    return;
+  }
+  const q = removeAccents(query.trim().toUpperCase());
+  _dropdownIndex = -1;
+  let items = "";
+  let optIdx = 0;
+  let total = 0;
+  DS_NHOM.forEach(nhom => {
+    const matches = nhom.danhSach.filter(cb => removeAccents(cb.toUpperCase()).includes(q));
+    if (!matches.length) return;
+    items += `<div class="chibo-group-header" style="pointer-events:none">${nhom.ten}</div>`;
+    matches.forEach(cb => {
+      items += `<div class="chibo-option" data-val="${cb}" data-idx="${optIdx}"
+        onmousedown="chiBoSelect('${cb.replace(/'/g,"\'")}', event)"
+        onmouseover="chiBoHover(${optIdx})">${highlight(cb, query)}</div>`;
+      optIdx++; total++;
+    });
+  });
+  body.innerHTML = total ? items : '<div class="chibo-no-result">Không tìm thấy tổ chức nào</div>';
+}
+
+function chiBoGroupsHtml() {
+  let html = "";
+  DS_NHOM.forEach(nhom => {
+    const isOpen = _openGroupId === nhom.id;
+    html += `<div class="chibo-group-header${isOpen ? " open" : ""}" onclick="chiBoToggleGroup('${nhom.id}', event)">
+      <span>${nhom.ten}<span class="chibo-group-count">${nhom.danhSach.length}</span></span>
+      <span class="nhom-arrow">▶</span>
+    </div>
+    <div class="chibo-group-items${isOpen ? " open" : ""}" id="items-${nhom.id}">
+      <div class="chibo-group-search-wrap">
+        <input class="chibo-group-search" type="text" placeholder="🔍 Tìm trong nhóm này..."
+          oninput="chiBoFilterGroup('${nhom.id}', this.value)" onkeydown="chiBoGroupSearchKey(event, '${nhom.id}')">
+      </div>
+      ${nhom.danhSach.map((cb, i) => `<div class="chibo-option" data-val="${cb}" data-group="${nhom.id}"
+        onmousedown="chiBoSelect('${cb.replace(/'/g,"\'")}', event)"
+        onmouseover="this.classList.add('active')" onmouseout="this.classList.remove('active')">${cb}</div>`).join("")}
+    </div>`;
+  });
+  return html;
+}
+
+function chiBoToggleGroup(groupId, e) {
+  if (e) e.stopPropagation();
+  // Đóng bàn phím đang mở (nếu có) khi đổi nhóm, tránh bàn phím che mất danh sách vừa xổ ra
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  _openGroupId = (_openGroupId === groupId) ? null : groupId;
+  // Chỉ vẽ lại phần danh sách nhóm, không auto-focus ô tìm-trong-nhóm
+  // => bàn phím KHÔNG tự bật lên khi chạm để mở/đóng 1 nhóm.
+  chiBoRenderBody("");
+}
+
+function chiBoFilterGroup(groupId, query) {
+  const container = document.getElementById("items-" + groupId);
+  if (!container) return;
+  const q = removeAccents(query.trim().toUpperCase());
+  container.querySelectorAll(".chibo-option").forEach(el => {
+    const match = !q || removeAccents(el.dataset.val.toUpperCase()).includes(q);
+    el.style.display = match ? "" : "none";
+  });
+  // Ô này người dùng chủ động chạm vào để gõ, nên bàn phím mở là hợp lý;
+  // cuộn cho ô luôn hiện phía trên bàn phím để không bị che.
+  setTimeout(() => {
+    const inp = container.querySelector(".chibo-group-search");
+    if (inp) inp.scrollIntoView({ block: "center" });
+  }, 50);
+}
+
+function chiBoGroupSearchKey(e, groupId) {
+  if (e.key === "Escape") {
+    e.target.blur();
+    if (document.getElementById("items-" + groupId)) chiBoAdjustHeight();
+  }
+  if (e.key === "Enter") {
+    const container = document.getElementById("items-" + groupId);
+    const visible = container ? [...container.querySelectorAll(".chibo-option")].filter(el => el.style.display !== "none") : [];
+    if (visible.length === 1) chiBoSelect(visible[0].dataset.val, null);
+  }
+}
+
+function chiBoModalSearchKeyDown(e) {
+  const options = document.querySelectorAll("#chibo-modal-body .chibo-option");
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    _dropdownIndex = Math.min(_dropdownIndex + 1, options.length - 1);
+    options.forEach((el, i) => el.classList.toggle("active", i === _dropdownIndex));
+    if (options[_dropdownIndex]) options[_dropdownIndex].scrollIntoView({ block: "nearest" });
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    _dropdownIndex = Math.max(_dropdownIndex - 1, 0);
+    options.forEach((el, i) => el.classList.toggle("active", i === _dropdownIndex));
+    if (options[_dropdownIndex]) options[_dropdownIndex].scrollIntoView({ block: "nearest" });
+  } else if (e.key === "Enter" && _dropdownIndex >= 0 && options[_dropdownIndex]) {
+    e.preventDefault();
+    chiBoSelect(options[_dropdownIndex].dataset.val, null);
+  } else if (e.key === "Escape") {
+    chiBoCloseModal();
+  }
+}
+
+function chiBoSelect(val, e) {
+  if (e) e.preventDefault();
+  document.getElementById("chibo-search").value = val;
+  document.getElementById("chibo").value = val;
+  document.getElementById("chibo-clear").style.display = "block";
+  chiBoCloseModal();
+  _chiBoSelected = val;
+}
+
+function chiBoClear() {
+  document.getElementById("chibo-search").value = "";
+  document.getElementById("chibo").value = "";
+  document.getElementById("chibo-clear").style.display = "none";
+  chiBoCloseModal();
+  _chiBoSelected = "";
+}
+
+function chiBoCloseModal() {
+  const dropdown = document.getElementById("chibo-dropdown");
+  // Chỉ đóng bàn phím nếu phần tử đang focus nằm TRONG modal chi bộ này
+  // (tránh làm mất focus/che các ô khác như "Thời gian báo cáo", "Loại báo cáo"...)
+  if (document.activeElement && dropdown.contains(document.activeElement) && document.activeElement.blur) {
+    document.activeElement.blur();
+  }
+  dropdown.classList.remove("open");
+  _openGroupId = null;
+}
+
+function chiBoBackdropClick(e) {
+  if (e.target.id === "chibo-dropdown") chiBoCloseModal();
+}
+
+function chiBoHover(idx) {
+  _dropdownIndex = idx;
+  document.querySelectorAll("#chibo-modal-body .chibo-option").forEach((el, i) => el.classList.toggle("active", i === idx));
+}
+
+// Ô chi bộ ngoài chỉ là nơi hiển thị/mở modal (readonly) — Enter/Space cũng mở được cho thao tác bàn phím
+function chiBoKeyDown(e) {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    chiBoOpenModal();
+  }
+}
+
+// Co giãn chiều cao modal theo vùng nhìn thấy thực tế (visualViewport) để khi
+// bàn phím mở lên, nội dung tự thu gọn và cuộn được thay vì bị bàn phím che mất.
+function chiBoAdjustHeight() {
+  const vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight);
+  document.documentElement.style.setProperty("--chibo-max-h", Math.round(vh * 0.9) + "px");
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", chiBoAdjustHeight);
+} else {
+  window.addEventListener("resize", chiBoAdjustHeight);
+}
+
+document.addEventListener("click", function(e) {
+  const dropdown = document.getElementById("chibo-dropdown");
+  if (!dropdown.classList.contains("open")) return; // modal đang đóng thì không làm gì cả
+  if (!document.getElementById("chibo-wrapper").contains(e.target))
+    chiBoCloseModal();
+});
+
+function removeAccents(str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+}
+
+function highlight(text, query) {
+  const q = query.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`(${q})`, "gi");
+  return text.replace(re, "<mark>$1</mark>");
+}
+
+// Tạo file Word với bố cục theo mẫu
+function createWordDocument(filename) {
+  const { 
+    Document, 
+    Paragraph, 
+    TextRun, 
+    AlignmentType,
+    Packer
+  } = docx;
+
+  const children = [];
+  // Tiêu đề chính
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "MẪU 02CB",
+          bold: true,
+          size: 24,
+          font: "Times New Roman",
+        }),
+      ],
+      alignment: AlignmentType.RIGHT,
+      spacing: { after: 150 },
+    })
+  );
+
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "(Dành cho Chi bộ)",
+          bold: true,
+          size: 22,
+          font: "Times New Roman",
+        }),
+      ],
+      alignment: AlignmentType.RIGHT,
+      spacing: { after: 300 },
+    })
+  );
+  
+  // ===== PHẦN ĐẦU TRANG THEO MẪU =====
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+
+  const chiBoName = document.getElementById("chibo").value || "..............................................";
+
+  // Dòng 1: ĐẢNG BỘ PHƯỜNG ......... (trái)     ĐẢNG CỘNG SẢN VIỆT NAM (phải)
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "ĐẢNG BỘ PHƯỜNG THANH KHÊ",
+          bold: true,
+          font: "Times New Roman",
+          size: 26,
+        }),
+        new TextRun({ text: "\t" }),
+        new TextRun({
+          text: "ĐẢNG CỘNG SẢN VIỆT NAM",
+          bold: true,
+          underline: {},
+          font: "Times New Roman",
+          size: 26,
+        }),
+      ],
+      tabStops: [
+        { position: 2000, type: docx.TabStopType.LEFT },
+        { position: 9500, type: docx.TabStopType.RIGHT }
+      ],
+      spacing: { after: 150 },
+    })
+  );
+
+  // Dòng 2: CHI BỘ ......... (trái)     ngày ... tháng ... năm ... (phải)
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: `CHI BỘ ${chiBoName.toUpperCase()}`,
+          bold: true,
+          font: "Times New Roman",
+          size: 26,
+        }),
+        new TextRun({ text: "\t" }),
+        new TextRun({
+          text: `ngày ${day} tháng ${month} năm ${year}`,
+          italics: true,
+          font: "Times New Roman",
+          size: 26,
+        }),
+      ],
+      tabStops: [
+        { position: 2000, type: docx.TabStopType.LEFT },
+        { position: 9500, type: docx.TabStopType.RIGHT }
+      ],
+      spacing: { after: 250 },
+    })
+  );
+  
+  const thoiGian = document.getElementById("thoigian").value || ".........................";
+  
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: `Thời gian báo cáo: ${thoiGian}`,
+          bold: true,
+          size: 30,
+          font: "Times New Roman",
+        }),
+      ],
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 600 },
+    })
+  );
+
+  // Phần A
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "A. TÌNH HÌNH, KẾT QUẢ CÔNG TÁC KIỂM TRA, GIÁM SÁT VÀ THI HÀNH KỶ LUẬT ĐẢNG",
+          bold: true,
+          size: 26,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 400, after: 200 }
+    })
+  );
+
+  // I. KHÁI QUÁT CHUNG
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "I. KHÁI QUÁT CHUNG",
+          bold: true,
+          size: 24,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 300, after: 200 }
+    })
+  );
+
+  const khaiquat = document.getElementById("khaiquat").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: khaiquat || "Khái quát về tình hình tổ chức đảng, cấp ủy, đảng viên; tình hình UBKT.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // II. KẾT QUẢ CÔNG TÁC
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "II. KẾT QUẢ CÔNG TÁC KIỂM TRA, GIÁM SÁT, THI HÀNH KỶ LUẬT ĐẢNG",
+          bold: true,
+          size: 24,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 300, after: 200 }
+    })
+  );
+
+  // 1. Công tác lãnh đạo, chỉ đạo, hướng dẫn
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "1. Công tác lãnh đạo, chỉ đạo, hướng dẫn về kiểm tra, giám sát",
+          bold: true,
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  const lanhdao = document.getElementById("lanhdao").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: lanhdao || "Nội dung về công tác lãnh đạo, chỉ đạo, hướng dẫn về kiểm tra, giám sát.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // 2. Thực hiện nhiệm vụ kiểm tra, giám sát
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "2. Thực hiện nhiệm vụ kiểm tra, giám sát theo quy định của Điều lệ Đảng",
+          bold: true,
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  // 2.1. Kiểm tra tổ chức đảng, đảng viên
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "2.1. Kiểm tra tổ chức đảng, đảng viên",
+          bold: true,
+          size: 20,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  const kiemtra = document.getElementById("kiemtra").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: kiemtra || "Nội dung về kiểm tra tổ chức đảng, đảng viên.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // 2.2. Giám sát tổ chức đảng, đảng viên
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "2.2. Giám sát tổ chức đảng, đảng viên",
+          bold: true,
+          size: 20,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  // a) Giám sát thường xuyên và nắm tình hình địa bàn
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "a) Giám sát thường xuyên và nắm tình hình địa bàn",
+          bold: true,
+          size: 20,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  const giamsatthuongxuyen = document.getElementById("giamsatthuongxuyen").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: giamsatthuongxuyen || "Nội dung về giám sát thường xuyên và nắm tình hình địa bàn.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // b) Giám sát chuyên đề
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "b) Giám sát chuyên đề",
+          bold: true,
+          size: 20,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  const giamsatchuyende = document.getElementById("giamsatchuyende").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: giamsatchuyende || "Nội dung về giám sát chuyên đề.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // 2.3. Thi hành kỷ luật tổ chức đảng, đảng viên
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "2.3. Thi hành kỷ luật tổ chức đảng, đảng viên",
+          bold: true,
+          size: 20,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  const thihanhkyluat = document.getElementById("thihanhkyluat").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: thihanhkyluat || "Nội dung về thi hành kỷ luật tổ chức đảng, đảng viên.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // 2.4. Tiếp nhận, xử lý đơn thư, giải quyết tố cáo
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "2.4. Tiếp nhận, xử lý đơn thư, giải quyết tố cáo",
+          bold: true,
+          size: 20,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  const donthu = document.getElementById("donthu").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: donthu || "Nội dung về tiếp nhận, xử lý đơn thư, giải quyết tố cáo.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // 3. Công tác khác
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "3. Công tác khác",
+          bold: true,
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  const congtackhac = document.getElementById("congtackhac").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: congtackhac || "Nội dung về công tác khác.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // 4. Đánh giá chung
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "4. Đánh giá chung",
+          bold: true,
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  // 4.1. Ưu điểm
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "4.1. Ưu điểm",
+          bold: true,
+          size: 20,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  const uudiem = document.getElementById("uudiem").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: uudiem || "Nội dung về ưu điểm.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // 4.2. Hạn chế và nguyên nhân
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "4.2. Hạn chế và nguyên nhân",
+          bold: true,
+          size: 20,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  const hanche = document.getElementById("hanche").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: hanche || "Nội dung về hạn chế và nguyên nhân.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // 5. Kiến nghị, đề xuất
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "5. Kiến nghị, đề xuất",
+          bold: true,
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 200, after: 200 }
+    })
+  );
+
+  const kiennghi = document.getElementById("kiennghi").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: kiennghi || "Nội dung về kiến nghị, đề xuất.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // Phần B
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "B. PHƯƠNG HƯỚNG, NHIỆM VỤ CÔNG TÁC TRỌNG TÂM",
+          bold: true,
+          size: 26,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 400, after: 200 }
+    })
+  );
+
+  // I. PHƯƠNG HƯỚNG
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "I. PHƯƠNG HƯỚNG",
+          bold: true,
+          size: 24,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 300, after: 200 }
+    })
+  );
+
+  const phuonghuong = document.getElementById("phuonghuong").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: phuonghuong || "Nội dung về phương hướng.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // II. NHIỆM VỤ CÔNG TÁC TRỌNG TÂM
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "II. NHIỆM VỤ CÔNG TÁC TRỌNG TÂM",
+          bold: true,
+          size: 24,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { before: 300, after: 200 }
+    })
+  );
+
+  const nhiemvu = document.getElementById("nhiemvu").value;
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: nhiemvu || "Nội dung về nhiệm vụ công tác trọng tâm.",
+          size: 22,
+          font: "Times New Roman"
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // Phần kết và chữ ký
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "Nơi nhận:",
+          bold: true,
+          italics: true
+        })
+      ],
+      spacing: { before: 400, after: 200 }
+    })
+  );
+
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "- Ủy ban Kiểm tra Đảng ủy phường;",
+          italics: true
+        })
+      ],
+      spacing: { after: 100 }
+    })
+  );
+
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "- Lưu: Chi bộ.",
+          italics: true
+        })
+      ],
+      spacing: { after: 400 }
+    })
+  );
+
+  // Chữ ký
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: `T/M CHI BỘ ${chiBoName.toUpperCase()}`,
+          bold: true
+        })
+      ],
+      alignment: AlignmentType.RIGHT,
+      spacing: { before: 100 }
+    })
+  );
+
+  children.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: "BÍ THƯ",
+          bold: true
+        })
+      ],
+      alignment: AlignmentType.RIGHT,
+      spacing: { after: 800 }
+    })
+  );
+
+  const doc = new Document({
+    sections: [{
+      properties: {},
+      children: children
+    }]
+  });
+
+  return Packer.toBlob(doc);
+}
+
+// Xuất file Word
+function exportUnencrypted() {
+  const chiBo = document.getElementById("chibo").value;
+  const loaiBaoCao = document.getElementById("loaibaocao").value;
+
+  if (!chiBo) {
+    alert("Vui lòng chọn chi bộ!");
+    chiBoOpenModal();
+    return;
+  }
+
+  if (!loaiBaoCao) {
+    alert("Vui lòng chọn loại báo cáo!");
+    return;
+  }
+
+  const filename = `BCKT02_${chiBo.replace(/\s+/g, '_')}.docx`;
+
+  createWordDocument(filename).then(blob => {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+}
+
+// ===== MODAL GỬI BÁO CÁO =====
+function openSendModal() {
+  const chiBo = document.getElementById("chibo").value;
+  const loaiBaoCao = document.getElementById("loaibaocao").value;
+  if (!chiBo) {
+    alert("Vui lòng chọn chi bộ trước khi gửi!");
+    chiBoOpenModal();
+    return;
+  }
+  if (!loaiBaoCao) {
+    alert("Vui lòng chọn loại báo cáo!");
+    return;
+  }
+  const thoiGian = document.getElementById("thoigian").value;
+  document.getElementById("modal-chibo-info").textContent = `Chi bộ: ${chiBo}  |  ${thoiGian}`;
+  document.getElementById("modal-status").textContent = "";
+  document.getElementById("modal-status").className = "modal-status";
+  document.getElementById("modal-actions").innerHTML = `
+    <button class="modal-btn modal-btn-confirm" onclick="doSendReport()">✅ Xác nhận gửi</button>
+    <button class="modal-btn modal-btn-cancel" onclick="closeSendModal()">Hủy</button>`;
+  document.getElementById("modal-actions").style.display = "flex";
+  document.getElementById("send-modal").classList.add("open");
+}
+
+function closeSendModal() {
+  document.getElementById("send-modal").classList.remove("open");
+}
+
+async function doSendReport() {
+  const chiBo = document.getElementById("chibo").value;
+  const loaiBaoCao = document.getElementById("loaibaocao").value;
+  const thoiGian = document.getElementById("thoigian").value;
+  const now = new Date();
+
+  const statusEl = document.getElementById("modal-status");
+  const actionsEl = document.getElementById("modal-actions");
+
+  statusEl.innerHTML = '<span class="spinner"></span> Đang tạo file...';
+  statusEl.className = "modal-status wait";
+  actionsEl.style.display = "none";
+
+  try {
+    const filename = `BCKT02_${chiBo.replace(/\s+/g, "_")}_${thoiGian.replace(/\s+/g, "_")}.docx`;
+    const blob = await createWordDocument(filename);
+
+    statusEl.innerHTML = '<span class="spinner"></span> Đang gửi lên Drive...';
+
+    const base64 = await blobToBase64(blob);
+    const payload = {
+      loaiMau: "Mau02",
+      chibo: chiBo,
+      thoigian: thoiGian,
+      loaiBaoCao: thoiGian,
+      nam: now.getFullYear(),
+      fileName: filename,
+      fileBase64: base64
+    };
+
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      statusEl.innerHTML = `${data.message}<br><a href="${data.fileUrl}" target="_blank" style="color:var(--secondary);">📄 Xem file trên Drive</a>`;
+      statusEl.className = "modal-status ok";
+      actionsEl.innerHTML = `<button class="modal-btn modal-btn-confirm" onclick="window.location.href='index.html'">🏠 Về trang chủ</button>`;
+      actionsEl.style.display = "flex";
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (err) {
+    statusEl.textContent = "❌ Lỗi: " + err.message;
+    statusEl.className = "modal-status err";
+    actionsEl.style.display = "flex";
+  }
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+</script>
+<footer class="site-footer">
+  ỦY BAN KIỂM TRA ĐẢNG ỦY THANH KHÊ
+</footer>
+</body>
+</html>
